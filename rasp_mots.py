@@ -111,7 +111,7 @@ def RL(A):
         GPIO.output(RLB, GPIO.HIGH)
     elif A == 0:
         GPIO.output(RLF, GPIO.LOW)
-        GPIO.output(RLB, GPIO.HIGH)
+        GPIO.output(RLB, GPIO.LOW)
 
 
 # --------------------------------------------------
@@ -126,7 +126,7 @@ def RR(A):
         GPIO.output(RRB, GPIO.HIGH)
     elif A == 0:
         GPIO.output(RRF, GPIO.LOW)
-        GPIO.output(RRB, GPIO.HIGH)
+        GPIO.output(RRB, GPIO.LOW)
 
 
 # --------------------------------------------------
@@ -141,7 +141,7 @@ def FR(A):
         GPIO.output(FRB, GPIO.HIGH)
     elif A == 0:
         GPIO.output(FRF, GPIO.LOW)
-        GPIO.output(FRB, GPIO.HIGH)
+        GPIO.output(FRB, GPIO.LOW)
 
 
 # --------------------------------------------------
@@ -156,7 +156,7 @@ def FL(A):
         GPIO.output(FLB, GPIO.HIGH)
     elif A == 0:
         GPIO.output(FLF, GPIO.LOW)
-        GPIO.output(FLB, GPIO.HIGH)
+        GPIO.output(FLB, GPIO.LOW)
 
 
 main()
