@@ -43,6 +43,8 @@ def main():
         time.sleep(1.5)
         Backw()
         time.sleep(1.5)
+        NoMove()
+        time.sleep(3)
 
 
 # --------------------------------------------------
@@ -95,6 +97,16 @@ def Right(ang):
     # A delay is added, that defines the angle
     time.sleep(Turn * ang / 360)
     # The turn is stopped
+    RL(0)
+    RR(0)
+
+
+# --------------------------------------------------
+# Function to stop all wheel
+def NoMove():
+    # Stop all wheels
+    FL(0)
+    FR(0)
     RL(0)
     RR(0)
 
