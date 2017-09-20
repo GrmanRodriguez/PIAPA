@@ -49,9 +49,11 @@ def main():
         if m == 'w':
             Forw()
             time.delay(Lin)
+            NoMove()
         elif m == 's':
             Backw()
             time.delay(Lin)
+            NoMove()
         elif m == 'a':
             Left(minAng)
         elif m == 's':
