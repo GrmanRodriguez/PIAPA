@@ -34,14 +34,12 @@ GPIO.setup(FRB, GPIO.OUT)
 def main():
     while 1:
         Left(360)
-        Forw()
-        time.sleep(1.5)
-        Backw()
-        time.sleep(1.5)
+        Forw(1.5)
+        Backw(1.5)
         Right(360)
-        Forw()
+        Forw(1.5)
         time.sleep(1.5)
-        Backw()
+        Backw(1.5)
         time.sleep(1.5)
         NoMove()
         time.sleep(3)
@@ -49,22 +47,36 @@ def main():
 
 # --------------------------------------------------
 # Function to move forward
-def Forw():
+def Forw(a):
     # All wheels must move forward
     RL(1)
     RR(1)
     FL(1)
     FR(1)
+    # Make the movement for "a" seconds
+    time.sleep(a)
+    # Now stop
+    RL(0)
+    RR(0)
+    FL(0)
+    FR(0)
 
 
 # --------------------------------------------------
 # Function to move backwards
-def Backw():
+def Backw(a):
     # All wheel must move backwards
     RL(2)
     RR(2)
     FL(2)
     FR(2)
+    # Make the movement for "a" seconds
+    time.sleep(a)
+    # Now stop
+    RL(0)
+    RR(0)
+    FL(0)
+    FR(0)
 
 
 # --------------------------------------------------
@@ -171,4 +183,5 @@ def FL(A):
         GPIO.output(FLB, GPIO.LOW)
 
 
-main()
+if __name__ == "__main__":
+    main()
