@@ -40,6 +40,6 @@ Controls the lift angle of the wrist.
 
 **Motor #4**
 
-Control the grip.
+Controls the grip.
 
 *Fully open:* p900
