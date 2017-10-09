@@ -20,5 +20,4 @@ The motors have been properly marked and now the robot has a sense of forward. T
 
 **Oct 9th, 2017:**
 
-4610fa3ed5fd3ba668c390c5b445d2a53921d0d5
 The Lynxmotion AL5C robotic arm has been characterized. Now it can be used with full knowledge on how to move it.
