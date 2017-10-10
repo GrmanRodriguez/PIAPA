@@ -6,7 +6,7 @@ For this prototype, the [Lynxmotion AL5C](https://www.researchgate.net/publicati
 
 **Motor #0**
 
-Controls the rotation of the hole arm.
+Controls the rotation of the whole arm.
 
 *Neutral Position (Motor #1 sits between the 2 ID stickers):* p1600 
 
