@@ -43,3 +43,5 @@ Controls the lift angle of the wrist.
 Controls the grip.
 
 *Fully open:* p900
+
+*Fully closed:* p2000

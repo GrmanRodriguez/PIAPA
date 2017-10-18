@@ -184,4 +184,9 @@ def FL(A):
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except:
+        print("Program stopped.")
+    finally:
+        GPIO.cleanup()
