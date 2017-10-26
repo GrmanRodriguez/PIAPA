@@ -21,3 +21,9 @@ The motors have been properly marked and now the robot has a sense of forward. T
 **Oct 9th, 2017:**
 
 The Lynxmotion AL5C robotic arm has been characterized. Now it can be used with full knowledge on how to move it.
+
+---
+
+**Oct 26th, 2017:**:
+
+The rover vehicle is now battery powered and its angle movement has been calibrated. raspMots.py (commit: b47cf07513fc8e78cc15ccb1650d6be2a2ee6a39) was imported as a library and some of its commands working are shown [here](https://youtu.be/wpJkDJAA3jc).
