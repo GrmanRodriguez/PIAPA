@@ -8,25 +8,29 @@ import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 # --------------------------------------------------
 # Definitions and Setup
-GPIO.setmode(GPIO.BOARD)  # GPIO Configuration
-RLF = 3  # The forward-moving end of the rear left motor is connected to GPIO pin 3
-RLB = 5  # The backwards-moving end of the rear left motor is connected to GPIO pin 5
+
+RLF = 19  # The forward-moving end of the rear left motor is connected to GPIO pin 19
+RLB = 21  # The backwards-moving end of the rear left motor is connected to GPIO pin 21
 RRF = 8  # The forward-moving end of the rear right motor is connected to GPIO pin 8
 RRB = 10  # The backwards-moving end of the rear right motor is connected to GPIO pin 10
 FLF = 11  # The forward-moving end of the front left motor is connected to GPIO pin 11
 FLB = 13  # The backwards-moving end of the front left motor is connected to GPIO pin 13
 FRF = 16  # The forward-moving end of the front right motor is connected to GPIO pin 16
 FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
-Turn = 1  # Time needed by the robot to make a 360 degree turn (TO BE TUNED)
-# Setup pins as outputs
-GPIO.setup(RLF, GPIO.OUT)
-GPIO.setup(RLB, GPIO.OUT)
-GPIO.setup(RRF, GPIO.OUT)
-GPIO.setup(RRB, GPIO.OUT)
-GPIO.setup(FLF, GPIO.OUT)
-GPIO.setup(FLB, GPIO.OUT)
-GPIO.setup(FRF, GPIO.OUT)
-GPIO.setup(FRB, GPIO.OUT)
+Turn = 8  # Time needed by the robot to make a 360 degree turn (TO BE TUNED)
+
+
+def setup():
+    # Setup pins as outputs
+    GPIO.setmode(GPIO.BOARD)  # GPIO Configuration
+    GPIO.setup(RLF, GPIO.OUT)
+    GPIO.setup(RLB, GPIO.OUT)
+    GPIO.setup(RRF, GPIO.OUT)
+    GPIO.setup(RRB, GPIO.OUT)
+    GPIO.setup(FLF, GPIO.OUT)
+    GPIO.setup(FLB, GPIO.OUT)
+    GPIO.setup(FRF, GPIO.OUT)
+    GPIO.setup(FRB, GPIO.OUT)
 
 
 # --------------------------------------------------
@@ -183,10 +187,15 @@ def FL(A):
         GPIO.output(FLB, GPIO.LOW)
 
 
+def quit():
+    GPIO.cleanup()
+
+
 if __name__ == "__main__":
     try:
+        setup()
         main()
     except:
         print("Program stopped.")
     finally:
-        GPIO.cleanup()
+        quit()
