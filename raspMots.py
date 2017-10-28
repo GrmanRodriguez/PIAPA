@@ -1,7 +1,7 @@
 # PIAPA Robot
 # Grman Rodriguez
 # Raspberry-Motors Connection
-# Phase 1, making it work
+# Phase 1: making it work
 # --------------------------------------------------
 # Libraries
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
@@ -17,7 +17,7 @@ FLF = 11  # The forward-moving end of the front left motor is connected to GPIO 
 FLB = 13  # The backwards-moving end of the front left motor is connected to GPIO pin 13
 FRF = 16  # The forward-moving end of the front right motor is connected to GPIO pin 16
 FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
-Turn = 5.8  # Time needed by the robot to make a 360 degree turn (TO BE TUNED)
+Turn = 5.8  # Time needed by the robot to make a 360 degree turn (TUNED)
 
 
 def setup():
