@@ -319,6 +319,7 @@ class Rover:
         self.x = x
         self.y = y
 
+    # goToRoute will execute the necessary commands to go to the desired destination
     def goToRoute(self):
         angle = math.atan2(self.y, self.x) * 180 / math.pi
         dist = math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
