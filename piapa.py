@@ -319,8 +319,21 @@ class Rover:
         self.x = x
         self.y = y
 
+    def goToRoute(self):
+        angle = math.atan2(self.y, self.x) * 180 / math.pi
+        dist = math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
+        if (angle < 180):
+            self.left(angle)
+        else:
+            self.right(360 - angle)
+        self.forw(dist)
+        if (angle < 180):
+            self.right(angle)
+        else:
+            self.left(360 - angle)
+
     # Function to handle object destruction and general pin cleanup when needed
     def quit(self):
         GPIO.cleanup()
 
-    # TO BE WRITTEN: goToTarget and route functions
+    # TO BE WRITTEN: route function
