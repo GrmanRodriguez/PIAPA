@@ -221,13 +221,13 @@ class Rover:
 
     # Function to turn left
     def left(self, ang):
-        # To turn right we maintain the front wheels off
+        # To turn left we maintain the front wheels off
         self.FL(0)
         self.FR(0)
-        # The rear left wheel must move backwards
-        self.RL(2)
-        # The rear right wheel must move forward
-        self.RR(1)
+        # The rear left wheel must move forward
+        self.RL(1)
+        # The rear right wheel must move backwards
+        self.RR(2)
         # A delay is added, that defines the angle
         time.sleep(self.Turn * ang / 360)
         # The turn is stopped
