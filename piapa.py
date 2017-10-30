@@ -322,16 +322,18 @@ class Rover:
     # goToRoute will execute the necessary commands to go to the desired destination
     def goToRoute(self):
         angle = math.atan2(self.y, self.x) * 180 / math.pi
+        if (angle < 0):
+            angle = 360 + angle
         dist = math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
-        if (angle < 180):
-            self.left(angle)
-        else:
-            self.right(360 - angle)
+        if (angle < 90):
+            self.right(90 - angle)
+        elif (angle > 270):
+            self.right(450 - angle)
+        elif (angle > 90 and angle < 180):
+            self.left(angle - 90)
+        elif (angle > 180 and angle < 270):
+            self.left(angle - 90)
         self.forw(dist)
-        if (angle < 180):
-            self.right(angle)
-        else:
-            self.left(360 - angle)
 
     # Function to handle object destruction and general pin cleanup when needed
     def quit(self):
