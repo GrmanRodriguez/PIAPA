@@ -15,8 +15,8 @@ import time  # time library for delays
 # The Scanner class will control the sensors and provide a map array
 class Scanner:
 
-    # scanMap will get a new map array, with distance measured from -45° to 135° with the precision allowed by the sensor
-    # It is assumed that sensor 2 looks to the front, while sensors 1 and 3 are 90° to the left and 90° to the right respectively
+    # scanMap will get a new map array, with distance measured from -45 degrees to 135 degrees with the precision allowed by the sensor
+    # It is assumed that sensor 2 looks to the front, while sensors 1 and 3 are 90 degrees to the left and 90 degrees to the right respectively
     # The output is an array with 2 columns. The first corresponds to the angle and the second one the distance to the sensor in said direction
     def scanMap(self):
         newmap = np.empty((0, 2), float)
