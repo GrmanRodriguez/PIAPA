@@ -15,6 +15,22 @@ import time  # time library for delays
 # The Scanner class will control the sensors and provide a map array
 class Scanner:
 
+    # pinout 
+    echo2 = 24	# pin of echo, hcsr04-2 (middle)
+    trig2 = 26	# pin of trigger, hcsr04-2 (middle)
+    echo1 = 29	# pin of echo, hcsr04-1 (left)
+    trig1 = 31	# pin of trigger, hcsr04-1 (left)
+    echo3 = 36	# pin of echo, hcsr04-3 (right)
+    trig3 = 38	# pin of trigger, hcsr04-3 (right)
+
+    def __init__(self):
+    	GPIO.setmode(GPIO.BOARD)
+    	GPIO.setup(self.echo2, GPIO.IN)
+    	GPIO.setup(self.trig2, GPIO.OUT)
+    	GPIO.setup(self.echo1, GPIO.IN)
+    	GPIO.setup(self.trig1, GPIO.OUT)
+    	GPIO.setup(self.echo3, GPIO.IN)
+    	GPIO.setup(self.trig3, GPIO.OUT)
     # scanMap will get a new map array, with distance measured from -45 degrees to 135 degrees with the precision allowed by the sensor
     # It is assumed that sensor 2 looks to the front, while sensors 1 and 3 are 90 degrees to the left and 90 degrees to the right respectively
     # The output is an array with 2 columns. The first corresponds to the angle and the second one the distance to the sensor in said direction
@@ -40,7 +56,62 @@ class Scanner:
 
     # getDistance starts the sensor and gets a reading of the distance in its current direction
     def getDistance(self, sensor):
-        return 15.0
+        if sensor = 1:
+        	GPIO.output(trig1, False)	# turn off the trigger pin
+        	time.sleep(2*10**-6)		# two micro-seconds
+        	GPIO.output(trig1, True)	# turn on the trigger pin
+        	time.sleep(10*10**-6)		# ten micro-seconds
+        	GPIO.output(trig1, False)
+
+        	# started counting what time echo pin turn on 
+        	while GPIO.input(echo1) == 0:
+        		start1 = time.time()
+
+        	while GPIO.input(echo1) == 1:
+        		end1 = time.time()
+        	
+        	# the duration for the echo pin is
+        	duracion = end1-start1
+        	medida = (duracion1*34300)/2		
+        	
+
+        elif sensor = 2:
+        	GPIO.output(trig2, False)	# turn off the trigger pin
+        	time.sleep(2*10**-6)		# two micro-seconds
+        	GPIO.output(trig2, True)	# turn on the trigger pin
+        	time.sleep(10*10**-6)		# ten micro-seconds
+        	GPIO.output(trig2, False)
+
+        	# started counting what time echo pin turn on 
+        	while GPIO.input(echo2) == 0:
+        		start2 = time.time()
+
+        	while GPIO.input(echo2) == 1:
+        		end2 = time.time()
+        	
+        	# the duration for the echo pin is
+        	duracion = end2-start2
+        	medida = (duracion2*34300)/2		
+
+        elif sensor = 3:
+        	GPIO.output(trig3, False)	# turn off the trigger pin
+        	time.sleep(2*10**-6)		# two micro-seconds
+        	GPIO.output(trig3, True)	# turn on the trigger pin
+        	time.sleep(10*10**-6)		# ten micro-seconds
+        	GPIO.output(trig3, False)
+
+        	# started counting what time echo pin turn on 
+        	while GPIO.input(echo3) == 0:
+        		start3 = time.time()
+
+        	while GPIO.input(echo3) == 1:
+        		end3 = time.time()
+        	
+        	# the duration for the echo pin is
+        	duracion = end3-start3
+        	medida = (duracion3*34300)/2
+        
+        return medida
 
     # setSensorAngle moves the sensor array 'ang' degrees to the left
     def setSensorAngle(self, ang):
