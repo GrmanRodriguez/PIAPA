@@ -18,7 +18,7 @@ Controls the rotation of the whole arm.
 
 Controls the lift angle of the upper arm.
 
-*Neutral Position (Upper arm is lifted 90° relative to the ground):* p1450
+*Neutral Position (Upper arm is lifted 90° relative to the ground):* p1850
 
 *90° forward:* p400
 
@@ -28,7 +28,7 @@ Controls the lift angle of the forearm.
 
 *Neutral Position (Forearm is aligned with upper arm):* p700
 
-*90° forward:* p1500
+*90° forward:* p1450
 
 **Motor #3**
 
