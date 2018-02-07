@@ -400,4 +400,4 @@ class Map:
             del(nears)
             if newMin == self.locateInAM(self.targetY, self.targetX):
                 break
-        return routes[self.locateInAM(self.targetY, self.targetX)]
+        return routes[self.locateInAM(self.targetY, self.targetX)][1:]
