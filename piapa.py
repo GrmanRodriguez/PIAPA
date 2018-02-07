@@ -280,11 +280,12 @@ class Rover:
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
+        print('Angle: {}    It will turn {}'.format(ang, ang - self.angle)
         self.turn(ang - self.angle)  # And make the turn
-        self.angle = ang  # Update the state of the vehicle
-        distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
+        self.angle=ang  # Update the state of the vehicle
+        distance=((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
-        self.position = [y, x]  # Finally, update the state of the vehicle
+        self.position=[y, x]  # Finally, update the state of the vehicle
 
     # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
     def createTasks(self, points):
@@ -303,7 +304,7 @@ class Rover:
 
     # executeTasks will iterate over the generator object, performing each task as it should
     def executeTasks(self):
-        orders = self.stepTasks()
+        orders=self.stepTasks()
         while True:
             try:
                 next(orders)
@@ -319,20 +320,20 @@ class Map:
     def __init__(self, start=None, target=None):
         # The map is divided in a 7x7 cells arranged in matrix format from [0,0] to [6,6]
         # start and target are 2x1 lists
-        self.nodeAmount = 7
-        self.stepSize = 0.3  # Size of the cells in m
+        self.nodeAmount=7
+        self.stepSize=0.3  # Size of the cells in m
         if start is None:
-            self.startY = 5
-            self.startX = 5
+            self.startY=5
+            self.startX=5
         else:
-            self.startY = start[0]
-            self.startX = start[1]
+            self.startY=start[0]
+            self.startX=start[1]
         if target is None:
-            self.targetY = 0
-            self.targetX = 0
+            self.targetY=0
+            self.targetX=0
         else:
-            self.targetY = target[0]
-            self.targetX = target[1]
+            self.targetY=target[0]
+            self.targetX=target[1]
         self.adjMatrixCreate()
 
     def locateInAM(self, Y, X):
@@ -342,63 +343,63 @@ class Map:
         return [pos // self.nodeAmount, pos % self.nodeAmount]
 
     def adjMatrixCreate(self):
-        self.adjMatrix = np.zeros((self.nodeAmount ** 2, self.nodeAmount ** 2))
+        self.adjMatrix=np.zeros((self.nodeAmount ** 2, self.nodeAmount ** 2))
         for x in range(self.nodeAmount):
             for y in range(self.nodeAmount):
                 if y + 1 < self.nodeAmount:
-                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x)] = 10
-                    self.adjMatrix[self.locateInAM(y + 1, x)][self.locateInAM(y, x)] = 10
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x)]=10
+                    self.adjMatrix[self.locateInAM(y + 1, x)][self.locateInAM(y, x)]=10
                 if x + 1 < self.nodeAmount:
-                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y, x + 1)] = 10
-                    self.adjMatrix[self.locateInAM(y, x + 1)][self.locateInAM(y, x)] = 10
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y, x + 1)]=10
+                    self.adjMatrix[self.locateInAM(y, x + 1)][self.locateInAM(y, x)]=10
                 if (x > 0) and (y + 1 < self.nodeAmount):
-                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x - 1)] = 14
-                    self.adjMatrix[self.locateInAM(y + 1, x - 1)][self.locateInAM(y, x)] = 14
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x - 1)]=14
+                    self.adjMatrix[self.locateInAM(y + 1, x - 1)][self.locateInAM(y, x)]=14
                 if (x + 1 < self.nodeAmount) and (y + 1 < self.nodeAmount):
-                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x + 1)] = 14
-                    self.adjMatrix[self.locateInAM(y + 1, x + 1)][self.locateInAM(y, x)] = 14
-        self.adjMatrix[self.adjMatrix == 0] = -1
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x + 1)]=14
+                    self.adjMatrix[self.locateInAM(y + 1, x + 1)][self.locateInAM(y, x)]=14
+        self.adjMatrix[self.adjMatrix == 0]=-1
 
     def disableNode(self, y, x):
-        pos = self.locateInAM(y, x)
-        self.adjMatrix[pos] = -1
-        self.adjMatrix[:, pos] = -1
+        pos=self.locateInAM(y, x)
+        self.adjMatrix[pos]=-1
+        self.adjMatrix[:, pos]=-1
 
     def dijkstra(self):
         for x in range(self.nodeAmount):
             for y in range(self.nodeAmount):
                 if 'nodeList' in locals():
-                    nodeList = np.append(nodeList, [[x, y, float("inf"), 0]], axis=0)
+                    nodeList=np.append(nodeList, [[x, y, float("inf"), 0]], axis=0)
                 else:
-                    nodeList = np.array([[x, y, float("inf"), 0]])
-        nodeList[self.locateInAM(self.startY, self.startX)][2] = 0
-        routes = []
+                    nodeList=np.array([[x, y, float("inf"), 0]])
+        nodeList[self.locateInAM(self.startY, self.startX)][2]=0
+        routes=[]
         for x in range(self.nodeAmount ** 2):
             routes.append([])
-        routes[self.locateInAM(self.startY, self.startX)] = [[self.startY, self.startX]]
+        routes[self.locateInAM(self.startY, self.startX)]=[[self.startY, self.startX]]
 
         while 1:
-            newList = nodeList[nodeList[:, 3] == 0]
-            newList = newList[newList[:, 2].argsort()]
+            newList=nodeList[nodeList[:, 3] == 0]
+            newList=newList[newList[:, 2].argsort()]
             for node in newList:
-                newMin = int(self.locateInAM(node[0], node[1]))
-                [minY, minX] = self.findNode(newMin)
+                newMin=int(self.locateInAM(node[0], node[1]))
+                [minY, minX]=self.findNode(newMin)
                 for element in range(self.nodeAmount ** 2):
                     if self.adjMatrix[newMin][element] > 0 and nodeList[element][3] == 0:
                         if 'nears' in locals():
-                            nears = np.append(nears, [self.findNode(element)], axis=0)
+                            nears=np.append(nears, [self.findNode(element)], axis=0)
                         else:
-                            nears = np.array([self.findNode(element)])
+                            nears=np.array([self.findNode(element)])
 
                 if 'nears' in locals():
                     break
             for element in nears:
-                value = nodeList[newMin][2] + self.adjMatrix[newMin][self.locateInAM(element[0], element[1])]
+                value=nodeList[newMin][2] + self.adjMatrix[newMin][self.locateInAM(element[0], element[1])]
                 if nodeList[self.locateInAM(element[0], element[1])][2] > value:
-                    nodeList[self.locateInAM(element[0], element[1])][2] = value
-                    routes[self.locateInAM(element[0], element[1])] = routes[newMin][:]
+                    nodeList[self.locateInAM(element[0], element[1])][2]=value
+                    routes[self.locateInAM(element[0], element[1])]=routes[newMin][:]
                     routes[self.locateInAM(element[0], element[1])].append(element.tolist())
-            nodeList[newMin][3] = 1
+            nodeList[newMin][3]=1
             del(nears)
             if newMin == self.locateInAM(self.targetY, self.targetX):
                 break
@@ -406,9 +407,9 @@ class Map:
 
 
 if __name__ == '__main__':
-    r = Rover()
-    r.position = [0, 0]
-    m = Map(start=[0, 0], target=[4, 4])
+    r=Rover()
+    r.position=[0, 0]
+    m=Map(start=[0, 0], target=[4, 4])
     m.disableNode(1, 1)
     m.disableNode(4, 3)
     r.createTasks(m.dijkstra())
