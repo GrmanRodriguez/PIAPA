@@ -287,7 +287,7 @@ class Rover:
     # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
     def createTasks(self, points):
         for element in points:
-            self.tasks.append(lambda: self.goToPoint(element[0], element[1]))
+            self.goToPoint(element[0], element[1])
 
     # stepTasks will create the generator object from the tasks list
     def stepTasks(self):
