@@ -210,7 +210,7 @@ class Rover:
             # The rear right wheel must move backwards
             self.RR(2)
             # A delay is added, that defines the angle
-            time.sleep(self.Turn * ang / 360)
+            time.sleep(self.Turn * abs(ang) / 360)
             # The turn is stopped
             self.RL(0)
             self.RR(0)
