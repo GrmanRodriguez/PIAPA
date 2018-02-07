@@ -196,7 +196,7 @@ class Rover:
             self.FR(1)
             self.RR(1)
             # A delay is added, that defines the angle
-            time.sleep(self.Turn * ang / 360)
+            time.sleep(self.Turn * abs(ang) / 360)
             # The turn is stopped
             self.FR(0)
             self.FL(0)
@@ -210,7 +210,7 @@ class Rover:
             self.FR(2)
             self.RR(2)
             # A delay is added, that defines the angle
-            time.sleep(self.Turn * ang / 360)
+            time.sleep(self.Turn * abs(ang) / 360)
             # The turn is stopped
             self.FR(0)
             self.FL(0)
@@ -403,3 +403,11 @@ class Map:
             if newMin == self.locateInAM(self.targetY, self.targetX):
                 break
         return routes[self.locateInAM(self.targetY, self.targetX)][1:]
+
+
+r = Rover()
+r.position = [0, 0]
+m = Map(start=[0, 0], target=[4, 4])
+m.disableNode(1, 1)
+m.disableNode(4, 3)
+r.createTasks(m.dijkstra())
