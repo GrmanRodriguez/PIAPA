@@ -315,9 +315,9 @@ class Rover:
 
 class Map:
     def __init__(self, start=None, target=None):
-        # The map is divided in a 6x6 cells arranged in matrix format from [0,0] to [5,5]
+        # The map is divided in a 7x7 cells arranged in matrix format from [0,0] to [6,6]
         # start and target are 2x1 lists
-        self.nodeAmount = 6
+        self.nodeAmount = 7
         self.stepSize = 0.3  # Size of the cells in m
         if start is None:
             self.startY = 5
