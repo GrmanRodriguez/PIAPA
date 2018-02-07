@@ -198,6 +198,8 @@ class Rover:
             # A delay is added, that defines the angle
             time.sleep(self.Turn * ang / 360)
             # The turn is stopped
+            self.FR(0)
+            self.FL(0)
             self.RL(0)
             self.RR(0)
         if ang < 0:  # if the angle is negative, turn right.
@@ -210,6 +212,8 @@ class Rover:
             # A delay is added, that defines the angle
             time.sleep(self.Turn * ang / 360)
             # The turn is stopped
+            self.FR(0)
+            self.FL(0)
             self.RL(0)
             self.RR(0)
 
