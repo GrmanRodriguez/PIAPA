@@ -396,7 +396,6 @@ class Map:
                     nodeList[self.locateInAM(element[0], element[1])][2] = value
                     routes[self.locateInAM(element[0], element[1])] = routes[newMin][:]
                     routes[self.locateInAM(element[0], element[1])].append(element.tolist())
-                else:
             nodeList[newMin][3] = 1
             del(nears)
             if newMin == self.locateInAM(self.targetY, self.targetX):
