@@ -10,120 +10,16 @@ import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 # --------------------------------------------------
 # Classes
-
-
-# The Scanner class will control the sensors and provide a map array
-# class Scanner:
-
-#     # pinout
-#     echo2 = 24    # pin of echo, hcsr04-2 (middle)
-#     trig2 = 26    # pin of trigger, hcsr04-2 (middle)
-#     echo1 = 29    # pin of echo, hcsr04-1 (left)
-#     trig1 = 31    # pin of trigger, hcsr04-1 (left)
-#     echo3 = 36    # pin of echo, hcsr04-3 (right)
-#     trig3 = 38    # pin of trigger, hcsr04-3 (right)
-
-#     def __init__(self):
-#       GPIO.setmode(GPIO.BOARD)
-#       GPIO.setup(self.echo2, GPIO.IN)
-#       GPIO.setup(self.trig2, GPIO.OUT)
-#       GPIO.setup(self.echo1, GPIO.IN)
-#       GPIO.setup(self.trig1, GPIO.OUT)
-#       GPIO.setup(self.echo3, GPIO.IN)
-#       GPIO.setup(self.trig3, GPIO.OUT)
-#     # scanMap will get a new map array, with distance measured from -45 degrees to 135 degrees with the precision allowed by the sensor
-#     # It is assumed that sensor 2 looks to the front, while sensors 1 and 3 are 90 degrees to the left and 90 degrees to the right respectively
-#     # The output is an array with 2 columns. The first corresponds to the angle and the second one the distance to the sensor in said direction
-#     def scanMap(self):
-#         newmap = np.empty((0, 2), float)
-#         for x in xrange(0, 45):
-#             self.setSensorAngle(x)
-#             dist = self.getDistance(2)
-#             newmap = np.vstack((newmap, [(x + 90) * math.pi / 180, dist]))
-#             dist = self.getDistance(1)
-#             newmap = np.vstack((newmap, [(x + 180) * math.pi / 180, dist]))
-#             dist = self.getDistance(3)
-#             newmap = np.vstack((newmap, [x * math.pi / 180, dist]))
-#         for x in xrange(-45, 0):
-#             self.setSensorAngle(x)
-#             dist = self.getDistance(2)
-#             newmap = np.vstack((newmap, [(x + 90) * math.pi / 180, dist]))
-#             dist = self.getDistance(1)
-#             newmap = np.vstack((newmap, [(x + 180) * math.pi / 180, dist]))
-#             dist = self.getDistance(3)
-#             newmap = np.vstack((newmap, [x * math.pi / 180, dist]))
-#         return newmap
-
-#     # getDistance starts the sensor and gets a reading of the distance in its current direction
-#     def getDistance(self, sensor):
-#         if sensor = 1:
-#           GPIO.output(trig1, False)   # turn off the trigger pin
-#           time.sleep(2*10**-6)        # two micro-seconds
-#           GPIO.output(trig1, True)    # turn on the trigger pin
-#           time.sleep(10*10**-6)       # ten micro-seconds
-#           GPIO.output(trig1, False)
-
-#           # started counting what time echo pin turn on
-#           while GPIO.input(echo1) == 0:
-#               start1 = time.time()
-
-#           while GPIO.input(echo1) == 1:
-#               end1 = time.time()
-
-#           # the duration for the echo pin is
-#           duracion = end1-start1
-#           medida = (duracion1*34300)/2
-
-
-#         elif sensor = 2:
-#           GPIO.output(trig2, False)   # turn off the trigger pin
-#           time.sleep(2*10**-6)        # two micro-seconds
-#           GPIO.output(trig2, True)    # turn on the trigger pin
-#           time.sleep(10*10**-6)       # ten micro-seconds
-#           GPIO.output(trig2, False)
-
-#           # started counting what time echo pin turn on
-#           while GPIO.input(echo2) == 0:
-#               start2 = time.time()
-
-#           while GPIO.input(echo2) == 1:
-#               end2 = time.time()
-
-#           # the duration for the echo pin is
-#           duracion = end2-start2
-#           medida = (duracion2*34300)/2
-
-#         elif sensor = 3:
-#           GPIO.output(trig3, False)   # turn off the trigger pin
-#           time.sleep(2*10**-6)        # two micro-seconds
-#           GPIO.output(trig3, True)    # turn on the trigger pin
-#           time.sleep(10*10**-6)       # ten micro-seconds
-#           GPIO.output(trig3, False)
-
-#           # started counting what time echo pin turn on
-#           while GPIO.input(echo3) == 0:
-#               start3 = time.time()
-
-#           while GPIO.input(echo3) == 1:
-#               end3 = time.time()
-
-#           # the duration for the echo pin is
-#           duracion = end3-start3
-#           medida = (duracion3*34300)/2
-
-#         return medida
-
-#     # setSensorAngle moves the sensor array 'ang' degrees to the left
-#     def setSensorAngle(self, ang):
-#         angle = ang * math.pi / 180
-
-
 # The Rover class will handle vehicle movement and create and update routes
+
+
 class Rover:
 
-    # The variables x and y set the target the Rover should move towards
-    x = 0
-    y = 0
+    # The variables angle and position define the current state of the robot
+    angle = 90
+    position = [5, 5]
+    tasks = []  # This variable defines the tasks the vehicle must execute
+    gridSize = 0.3  # The size of the cells in meters
     RLF = 19  # The forward-moving end of the rear left motor is connected to GPIO pin 19
     RLB = 21  # The backwards-moving end of the rear left motor is connected to GPIO pin 21
     RRF = 8  # The forward-moving end of the rear right motor is connected to GPIO pin 8
@@ -290,35 +186,34 @@ class Rover:
         self.FL(0)
         self.FR(0)
 
-    # Function to turn left
-    def left(self, ang):
-        # To turn left we maintain the front wheels off
-        self.FL(0)
-        self.FR(0)
-        # The rear left wheel must move backwards
-        self.RL(2)
-        # The rear right wheel must move forward
-        self.RR(1)
-        # A delay is added, that defines the angle
-        time.sleep(self.Turn * ang / 360)
-        # The turn is stopped
-        self.RL(0)
-        self.RR(0)
-
-    # Function to turn right
-    def right(self, ang):
-        # To turn right we maintain the front wheels off
-        self.FL(0)
-        self.FR(0)
-        # The rear left wheel must move forward
-        self.RL(1)
-        # The rear right wheel must move backwards
-        self.RR(2)
-        # A delay is added, that defines the angle
-        time.sleep(self.Turn * ang / 360)
-        # The turn is stopped
-        self.RL(0)
-        self.RR(0)
+    # Function to turn
+    def turn(self, ang):
+        if ang > 0:  # if the angle is positive, turn left.
+            # To turn left we maintain the front wheels off
+            self.FL(0)
+            self.FR(0)
+            # The rear left wheel must move backwards
+            self.RL(2)
+            # The rear right wheel must move forward
+            self.RR(1)
+            # A delay is added, that defines the angle
+            time.sleep(self.Turn * ang / 360)
+            # The turn is stopped
+            self.RL(0)
+            self.RR(0)
+        if ang < 0:  # if the angle is negative, turn right.
+            # To turn right we maintain the front wheels off
+            self.FL(0)
+            self.FR(0)
+            # The rear left wheel must move forward
+            self.RL(1)
+            # The rear right wheel must move backwards
+            self.RR(2)
+            # A delay is added, that defines the angle
+            time.sleep(self.Turn * ang / 360)
+            # The turn is stopped
+            self.RL(0)
+            self.RR(0)
 
     # Function to stop all wheels
     def noMove(self):
@@ -380,34 +275,130 @@ class Rover:
             GPIO.output(self.FLF, GPIO.LOW)
             GPIO.output(self.FLB, GPIO.LOW)
 
-    # setTarget will update x and y to change the desired target
-    def setTarget(self, x, y):
-        # Distance will be limited to 4 meters as of now
-        if (math.pow(x, 2) + math.pow(y, 2) > 16):
-            ang = math.atan2(y, x)
-            x = 4 * math.cos(ang)
-            y = 4 * math.cos(ang)
-        self.x = x
-        self.y = y
+    # goToPoint will execute the necessary commands to go to the desired destination
+    def goToPoint(self, y, x):
+        ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
+        self.turn(ang - self.angle)  # And make the turn
+        self.angle = ang  # Update the state of the vehicle
+        distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
+        self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
+        self.position = [y, x]  # Finally, update the state of the vehicle
 
-    # goToRoute will execute the necessary commands to go to the desired destination
-    def goToRoute(self):
-        angle = 90 - (math.atan2(self.y, self.x) * 180 / math.pi)
-        dist = math.sqrt(math.pow(self.x, 2) + math.pow(self.y, 2))
-        if (angle > 180):
-            angle = -(270 + (math.atan2(self.y, self.x) * 180 / math.pi))
-        if (angle > 0):
-            self.right(angle)
-        else:
-            self.left(angle * -1)
-        self.forw(dist)
-        if (angle > 0):
-            self.left(angle)
-        else:
-            self.right(angle * -1)
+    # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
+    def createTasks(self, points):
+        for element in points:
+            self.tasks.append(lambda: self.goToPoint(element[0], element[1]))
+
+    # stepTasks will create the generator object from the tasks list
+    def stepTasks(self):
+        while True:
+            try:
+                self.tasks[0]()
+                del self.tasks[0]
+                yield
+            except Exception:
+                break
+
+    # executeTasks will iterate over the generator object, performing each task as it should
+    def executeTasks(self):
+        orders = self.stepTasks()
+        while True:
+            try:
+                next(orders)
+            except StopIteration:
+                break
 
     # Function to handle object destruction and general pin cleanup when needed
     def quit(self):
         GPIO.cleanup()
 
-    # TO BE WRITTEN: route function
+
+class Map:
+    def __init__(self, start=None, target=None):
+        # The map is divided in a 6x6 cells arranged in matrix format from [0,0] to [5,5]
+        # start and target are 2x1 lists
+        self.nodeAmount = 6
+        self.stepSize = 0.3  # Size of the cells in m
+        if start is None:
+            self.startY = 5
+            self.startX = 5
+        else:
+            self.startY = start[0]
+            self.startX = start[1]
+        if target is None:
+            self.targetY = 0
+            self.targetX = 0
+        else:
+            self.targetY = target[0]
+            self.targetX = target[1]
+        self.adjMatrixCreate()
+
+    def locateInAM(self, Y, X):
+        return (self.nodeAmount * Y) + X
+
+    def findNode(self, pos):
+        return [pos // self.nodeAmount, pos % self.nodeAmount]
+
+    def adjMatrixCreate(self):
+        self.adjMatrix = np.zeros((self.nodeAmount ** 2, self.nodeAmount ** 2))
+        for x in range(self.nodeAmount):
+            for y in range(self.nodeAmount):
+                if y + 1 < self.nodeAmount:
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x)] = 10
+                    self.adjMatrix[self.locateInAM(y + 1, x)][self.locateInAM(y, x)] = 10
+                if x + 1 < self.nodeAmount:
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y, x + 1)] = 10
+                    self.adjMatrix[self.locateInAM(y, x + 1)][self.locateInAM(y, x)] = 10
+                if (x > 0) and (y + 1 < self.nodeAmount):
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x - 1)] = 14
+                    self.adjMatrix[self.locateInAM(y + 1, x - 1)][self.locateInAM(y, x)] = 14
+                if (x + 1 < self.nodeAmount) and (y + 1 < self.nodeAmount):
+                    self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x + 1)] = 14
+                    self.adjMatrix[self.locateInAM(y + 1, x + 1)][self.locateInAM(y, x)] = 14
+        self.adjMatrix[self.adjMatrix == 0] = -1
+
+    def disableNode(self, y, x):
+        pos = self.locateInAM(y, x)
+        self.adjMatrix[pos] = -1
+        self.adjMatrix[:, pos] = -1
+
+    def dijkstra(self):
+        for x in range(self.nodeAmount):
+            for y in range(self.nodeAmount):
+                if 'nodeList' in locals():
+                    nodeList = np.append(nodeList, [[x, y, float("inf"), 0]], axis=0)
+                else:
+                    nodeList = np.array([[x, y, float("inf"), 0]])
+        nodeList[self.locateInAM(self.startY, self.startX)][2] = 0
+        routes = []
+        for x in range(self.nodeAmount ** 2):
+            routes.append([])
+        routes[self.locateInAM(self.startY, self.startX)] = [[self.startY, self.startX]]
+
+        while 1:
+            newList = nodeList[nodeList[:, 3] == 0]
+            newList = newList[newList[:, 2].argsort()]
+            for node in newList:
+                newMin = int(self.locateInAM(node[0], node[1]))
+                [minY, minX] = self.findNode(newMin)
+                for element in range(self.nodeAmount ** 2):
+                    if self.adjMatrix[newMin][element] > 0 and nodeList[element][3] == 0:
+                        if 'nears' in locals():
+                            nears = np.append(nears, [self.findNode(element)], axis=0)
+                        else:
+                            nears = np.array([self.findNode(element)])
+
+                if 'nears' in locals():
+                    break
+            for element in nears:
+                value = nodeList[newMin][2] + self.adjMatrix[newMin][self.locateInAM(element[0], element[1])]
+                if nodeList[self.locateInAM(element[0], element[1])][2] > value:
+                    nodeList[self.locateInAM(element[0], element[1])][2] = value
+                    routes[self.locateInAM(element[0], element[1])] = routes[newMin][:]
+                    routes[self.locateInAM(element[0], element[1])].append(element.tolist())
+                else:
+            nodeList[newMin][3] = 1
+            del(nears)
+            if newMin == self.locateInAM(self.targetY, self.targetX):
+                break
+        return routes[self.locateInAM(self.targetY, self.targetX)]
