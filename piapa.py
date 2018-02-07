@@ -28,7 +28,7 @@ class Rover:
     FLB = 13  # The backwards-moving end of the front left motor is connected to GPIO pin 13
     FRF = 16  # The forward-moving end of the front right motor is connected to GPIO pin 16
     FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
-    Turn = 5.8  # Time needed by the robot to make a 360 degree turn (TUNED)
+    Turn = 7  # Time needed by the robot to make a 360 degree turn (TUNED)
     Straight = 1  # Time needed by the robot to advance 1 meter (TUNED)
 
     def __init__(self):
@@ -189,12 +189,11 @@ class Rover:
     # Function to turn
     def turn(self, ang):
         if ang > 0:  # if the angle is positive, turn left.
-            # To turn left we maintain the front wheels off
-            self.FL(0)
-            self.FR(0)
-            # The rear left wheel must move backwards
+            # To turn left we move the left wheels backwards
+            self.FL(2)
             self.RL(2)
-            # The rear right wheel must move forward
+            # To turn left we move the right wheels forwards
+            self.FR(1)
             self.RR(1)
             # A delay is added, that defines the angle
             time.sleep(self.Turn * ang / 360)
@@ -202,15 +201,14 @@ class Rover:
             self.RL(0)
             self.RR(0)
         if ang < 0:  # if the angle is negative, turn right.
-            # To turn right we maintain the front wheels off
-            self.FL(0)
-            self.FR(0)
-            # The rear left wheel must move forward
+            # To turn right we move the left wheels forwards
+            self.FL(1)
             self.RL(1)
-            # The rear right wheel must move backwards
+            # To turn right we move the right wheels backwards
+            self.FR(2)
             self.RR(2)
             # A delay is added, that defines the angle
-            time.sleep(self.Turn * abs(ang) / 360)
+            time.sleep(self.Turn * ang / 360)
             # The turn is stopped
             self.RL(0)
             self.RR(0)
