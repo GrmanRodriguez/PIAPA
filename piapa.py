@@ -393,6 +393,18 @@ class Map:
 
                 if 'nears' in locals():
                     break
+            if not 'nears' in locals():
+                for node in newList:
+                    newMin = int(self.locateInAM(node[0], node[1]))
+                    [minY, minX] = self.findNode(newMin)
+                    for element in range(self.nodeAmount ** 2):
+                        if self.adjMatrix[newMin][element] > 0:
+                            if 'nears' in locals():
+                                nears = np.append(nears, [self.findNode(element)], axis=0)
+                            else:
+                                nears = np.array([self.findNode(element)])
+                    if 'nears' in locals():
+                        break
             for element in nears:
                 value = nodeList[newMin][2] + self.adjMatrix[newMin][self.locateInAM(element[0], element[1])]
                 if nodeList[self.locateInAM(element[0], element[1])][2] > value:
