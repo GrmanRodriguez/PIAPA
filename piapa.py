@@ -189,6 +189,12 @@ class Rover:
 
     # Function to turn
     def turn(self, ang):
+        # A small pause is added to make sure there is no drift
+        self.FR(0)
+        self.FL(0)
+        self.RL(0)
+        self.RR(0)
+        time.sleep(0.2)
         if ang > 0:  # if the angle is positive, turn left.
             # To turn left we move the left wheels backwards
             self.FL(2)
