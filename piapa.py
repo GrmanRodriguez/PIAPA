@@ -28,7 +28,8 @@ class Rover:
     FLB = 13  # The backwards-moving end of the front left motor is connected to GPIO pin 13
     FRF = 16  # The forward-moving end of the front right motor is connected to GPIO pin 16
     FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
-    Turn = 1.95  # Time needed by the robot to make a 360 degree turn (TUNED)
+    turnClockw = 2.2  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
+    turnCounterClockw = 2.1  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
     Straight = 1.0  # Time needed by the robot to advance 1 meter (TUNED)
 
     def __init__(self):
@@ -196,7 +197,7 @@ class Rover:
             self.FR(1)
             self.RR(1)
             # A delay is added, that defines the angle
-            time.sleep(self.Turn * abs(ang) / 360)
+            time.sleep(self.turnCounterClockw * abs(ang) / 360)
             # The turn is stopped
             self.FR(0)
             self.FL(0)
@@ -210,7 +211,7 @@ class Rover:
             self.FR(2)
             self.RR(2)
             # A delay is added, that defines the angle
-            time.sleep(self.Turn * abs(ang) / 360)
+            time.sleep(self.turnClockw * abs(ang) / 360)
             # The turn is stopped
             self.FR(0)
             self.FL(0)
@@ -280,7 +281,11 @@ class Rover:
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-        print('Angle: {}    It will turn {}'.format(ang, ang - self.angle))
+        toTurn = ang - self.angle
+        if toTurn == 45:
+            toTurn = 49
+        elif toTurn == -45:
+            toTurn = -49
         self.turn(ang - self.angle)  # And make the turn
         self.angle = ang  # Update the state of the vehicle
         distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
