@@ -437,3 +437,4 @@ if __name__ == '__main__':
     m.disableNode(5, 2)
     m.disableNode(1, 0)
     r.createTasks(m.dijkstra())
+    r.quit()
