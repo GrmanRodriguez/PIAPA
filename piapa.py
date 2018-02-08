@@ -431,8 +431,9 @@ class Map:
 
 if __name__ == '__main__':
     r = Rover()
-    r.position = [0, 0]
-    m = Map(start=[0, 0], target=[4, 4])
-    m.disableNode(1, 1)
-    m.disableNode(4, 3)
+    m = Map()
+    m.disableNode(4, 4)
+    m.disableNode(4, 5)
+    m.disableNode(5, 2)
+    m.disableNode(1, 0)
     r.createTasks(m.dijkstra())
