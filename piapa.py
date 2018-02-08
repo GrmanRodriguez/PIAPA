@@ -292,7 +292,8 @@ class Rover:
             toTurn = 49
         elif toTurn == -45:
             toTurn = -49
-        self.turn(ang - self.angle)  # And make the turn
+        if toTurn != 0:
+            self.turn(toTurn)  # And make the turn
         self.angle = ang  # Update the state of the vehicle
         distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
@@ -432,9 +433,11 @@ class Map:
 if __name__ == '__main__':
     r = Rover()
     m = Map()
-    m.disableNode(4, 4)
+    m.disableNode(4, 6)
     m.disableNode(4, 5)
-    m.disableNode(5, 2)
-    m.disableNode(1, 0)
+    m.disableNode(4, 4)
+    m.disableNode(4, 3)
+    m.disableNode(4, 2)
+    m.disableNode(4, 1)
     r.createTasks(m.dijkstra())
     r.quit()
