@@ -15,9 +15,9 @@ import time  # time library for delays
 
 class Rover:
 
-    # The variables angle and position define the current state of the robot
-    angle = 90
-    position = [5, 5]
+    state = [5, 5, 90]  # The state variable defines the y coordinate, x coordinate and angle. In that order.
+    freq = 100  # The pwm frequency
+    dutyCycle = 50  # The pwm duty cycle
     tasks = []  # This variable defines the tasks the vehicle must execute
     gridSize = 0.3  # The size of the cells in meters
     RLF = 19  # The forward-moving end of the rear left motor is connected to GPIO pin 19
@@ -35,18 +35,23 @@ class Rover:
     def __init__(self):
         # Setup pins as outputs
         GPIO.setmode(GPIO.BOARD)  # GPIO Configuration
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.rlf = GPIO.PWM(self.RLF, self.freq)
+        self.rlb = GPIO.PWM(self.RLB, self.freq)
+        self.rrf = GPIO.PWM(self.RRF, self.freq)
+        self.rrb = GPIO.PWM(self.RRB, self.freq)
+        self.flf = GPIO.PWM(self.FLF, self.freq)
+        self.flb = GPIO.PWM(self.FLB, self.freq)
+        self.frf = GPIO.PWM(self.FRF, self.freq)
+        self.frb = GPIO.PWM(self.FRB, self.freq)
 
     # Calibrate the Turn parameter
-    def calibrateTurn(self, Turn):
-        self.Turn = Turn
+    def calibrateTurn(self, Turn, which):
+        if which == 'c':
+            self.turnClockw = Turn
+        elif which == 'cc':
+            self.turnCounterClockw = Turn
+        else:
+            print('Invalid parameter(s)')
 
     # Calibrate the Straight parameter
     def calibrateStraight(self, Straight):
@@ -54,108 +59,28 @@ class Rover:
 
     # The following 8 functions change the pins used for each wheel if needs be
     def setRLF(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RLF = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.rfl = GPIO.PWM(pin, self.freq)
 
     def setRLB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RLB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.rfb = GPIO.PWM(pin, self.freq)
 
     def setRRF(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RRF = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.rrf = GPIO.PWM(pin, self.freq)
 
     def setRRB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RRB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.rrb = GPIO.PWM(pin, self.freq)
 
     def setFLF(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FLF = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.flf = GPIO.PWM(pin, self.freq)
 
     def setFLB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FLB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.flb = GPIO.PWM(pin, self.freq)
 
     def setFRB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FRB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.frb = GPIO.PWM(pin, self.freq)
 
     def setFRL(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FRL = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
+        self.frl = GPIO.PWM(pin, self.freq)
 
     # Function to move forward
     def forw(self, a):
@@ -236,62 +161,58 @@ class Rover:
     def RL(self, A):
         # A defines movement, if 1 = move forward, if 2 = move backwards, if 0 = don't move
         if A == 1:
-            GPIO.output(self.RLF, GPIO.HIGH)
-            GPIO.output(self.RLB, GPIO.LOW)
+            self.rlf.start(self.dutyCycle)
+            self.rlb.stop()
         elif A == 2:
-            GPIO.output(self.RLF, GPIO.LOW)
-            GPIO.output(self.RLB, GPIO.HIGH)
+            self.rlf.stop()
+            self.rlb.start(self.dutyCycle)
         elif A == 0:
-            GPIO.output(self.RLF, GPIO.LOW)
-            GPIO.output(self.RLB, GPIO.LOW)
+            self.rlf.stop()
+            self.rlb.stop()
 
     # Rear right wheel control
     def RR(self, A):
         # A defines movement, if 1 = move forward, if 2 = move backwards, if 0 = don't move
         if A == 1:
-            GPIO.output(self.RRF, GPIO.HIGH)
-            GPIO.output(self.RRB, GPIO.LOW)
+            self.rrf.start(self.dutyCycle)
+            self.rrb.stop()
         elif A == 2:
-            GPIO.output(self.RRF, GPIO.LOW)
-            GPIO.output(self.RRB, GPIO.HIGH)
+            self.rrf.stop()
+            self.rrb.start(self.dutyCycle)
         elif A == 0:
-            GPIO.output(self.RRF, GPIO.LOW)
-            GPIO.output(self.RRB, GPIO.LOW)
+            self.rrf.stop()
+            self.rrb.stop()
 
     # Front right wheel control
     def FR(self, A):
         # A defines movement, if 1 = move forward, if 2 = move backwards, if 0 = don't move
         if A == 1:
-            GPIO.output(self.FRF, GPIO.HIGH)
-            GPIO.output(self.FRB, GPIO.LOW)
+            self.frf.start(self.dutyCycle)
+            self.frb.stop()
         elif A == 2:
-            GPIO.output(self.FRF, GPIO.LOW)
-            GPIO.output(self.FRB, GPIO.HIGH)
+            self.frf.stop()
+            self.frb.start(self.dutyCycle)
         elif A == 0:
-            GPIO.output(self.FRF, GPIO.LOW)
-            GPIO.output(self.FRB, GPIO.LOW)
+            self.frf.stop()
+            self.frb.stop()
 
     # Front left wheel control
     def FL(self, A):
         # A defines movement, if 1 = move forward, if 2 = move backwards, if 0 = don't move
         if A == 1:
-            GPIO.output(self.FLF, GPIO.HIGH)
-            GPIO.output(self.FLB, GPIO.LOW)
+            self.flf.start(self.dutyCycle)
+            self.flb.stop()
         elif A == 2:
-            GPIO.output(self.FLF, GPIO.LOW)
-            GPIO.output(self.FLB, GPIO.HIGH)
+            self.flf.stop()
+            self.flb.start(self.dutyCycle)
         elif A == 0:
-            GPIO.output(self.FLF, GPIO.LOW)
-            GPIO.output(self.FLB, GPIO.LOW)
+            self.flf.stop()
+            self.flb.stop()
 
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         toTurn = ang - self.angle
-        if toTurn == 45:
-            toTurn = 49
-        elif toTurn == -45:
-            toTurn = -49
         if toTurn != 0:
             self.turn(toTurn)  # And make the turn
         self.angle = ang  # Update the state of the vehicle
