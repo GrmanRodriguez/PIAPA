@@ -220,7 +220,7 @@ class Rover:
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
         ang = math.atan2(-(y - self.state[0]), x - self.state[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-        toTurn = ang - self.angle
+        toTurn = ang - self.state[2]
         if toTurn != 0:
             self.turn(toTurn)  # And make the turn
         distance = ((y - self.state[0]) ** 2 + (x - self.state[1]) ** 2) ** 0.5 * self.gridSize
