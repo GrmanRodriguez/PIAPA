@@ -219,14 +219,13 @@ class Rover:
 
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
-        ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
+        ang = math.atan2(-(y - self.state[0]), x - self.state[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         toTurn = ang - self.angle
         if toTurn != 0:
             self.turn(toTurn)  # And make the turn
-        self.angle = ang  # Update the state of the vehicle
-        distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
+        distance = ((y - self.state[0]) ** 2 + (x - self.state[1]) ** 2) ** 0.5 * self.gridSize
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
-        self.position = [y, x]  # Finally, update the state of the vehicle
+        self.state = [y, x, ang]  # Finally, update the state of the vehicle
 
     # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
     def createTasks(self, points):
