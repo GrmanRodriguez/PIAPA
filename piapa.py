@@ -35,6 +35,14 @@ class Rover:
     def __init__(self):
         # Setup pins as outputs
         GPIO.setmode(GPIO.BOARD)  # GPIO Configuration
+        GPIO.setup(self.RLF, GPIO.OUT)
+        GPIO.setup(self.RLB, GPIO.OUT)
+        GPIO.setup(self.RRF, GPIO.OUT)
+        GPIO.setup(self.RRB, GPIO.OUT)
+        GPIO.setup(self.FLF, GPIO.OUT)
+        GPIO.setup(self.FLB, GPIO.OUT)
+        GPIO.setup(self.FRF, GPIO.OUT)
+        GPIO.setup(self.FRB, GPIO.OUT)
         self.rlf = GPIO.PWM(self.RLF, self.freq)
         self.rlb = GPIO.PWM(self.RLB, self.freq)
         self.rrf = GPIO.PWM(self.RRF, self.freq)
