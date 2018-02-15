@@ -113,7 +113,7 @@ class Rover:
         self.FL(2)
         self.FR(2)
         # Make the movement for "a" meters
-        time.sleep(a * 1 / self.Straight)
+        time.sleep(a * 1.0 / self.Straight)
         # Now stop
         self.RL(0)
         self.RR(0)
