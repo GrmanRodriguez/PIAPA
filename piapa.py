@@ -30,7 +30,7 @@ class Rover:
     FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
     turnClockw = 9.15  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
     turnCounterClockw = 9.7  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
-    Straight = 3.3  # Time needed by the robot to advance 1 meter (TUNED)
+    Straight = 2.3  # Time needed by the robot to advance 1 meter (TUNED)
 
     def __init__(self):
         # Setup pins as outputs
