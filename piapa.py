@@ -30,7 +30,7 @@ class Rover:
     FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
     turnClockw = 9.15  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
     turnCounterClockw = 9.7  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
-    Straight = 24.75  # Time needed by the robot to advance 1 meter (TUNED)
+    Straight = 3.3  # Time needed by the robot to advance 1 meter (TUNED)
 
     def __init__(self):
         # Setup pins as outputs
@@ -98,7 +98,7 @@ class Rover:
         self.FL(1)
         self.FR(1)
         # Make the movement for "a" meters
-        time.sleep(a * 1 / self.Straight)
+        time.sleep(a * self.Straight)
         # Now stop
         self.RL(0)
         self.RR(0)
@@ -113,7 +113,7 @@ class Rover:
         self.FL(2)
         self.FR(2)
         # Make the movement for "a" meters
-        time.sleep(a * 1.0 / self.Straight)
+        time.sleep(a * self.Straight)
         # Now stop
         self.RL(0)
         self.RR(0)
