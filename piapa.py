@@ -243,6 +243,14 @@ class Map:
         self.conn, self.address = self.herald.accept()
         self.sendData('basic')
 
+    @property
+    def target(self):
+        return self.target
+
+    @property
+    def start(self):
+        return self.start
+
     @target.setter
     def target(self, value):
         self.target = value
@@ -252,7 +260,6 @@ class Map:
     def start(self, value):
         self.start = value
         self.sendData('basic')
-
 
     def sendData(self, flag):
         if flag == 'basic':
