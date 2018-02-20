@@ -9,6 +9,7 @@ import math  # math library for operations
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 import socket  # library needed for communication with UI through Wi-Fi
+import json  # this library will allow us to send dictionaries through Wi-Fi as strings, amongst other things
 # --------------------------------------------------
 # Classes
 # The Rover class will handle vehicle movement and create and update routes
@@ -243,7 +244,7 @@ class Map:
         self.herald.bind(('', 53626))
         self.herald.listen(0)
         self.conn, self.address = self.herald.accept()
-        self.conn.sendall(self.__dict__.encode('utf-8'))
+        self.conn.sendall(json.dumps(self.__dict__).encode('utf-8'))
 
     def locateInAM(self, Y, X):
         return (self.nodeAmount * Y) + X
