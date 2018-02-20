@@ -265,8 +265,8 @@ class Map:
         if flag == 'basic':
             data = {'nodeAmount': self.nodeAmount,
                     'stepSize': self.stepSize,
-                    'start': [self.targetY, self.targetX],
-                    'target': [self.startY, self.startX],
+                    'start': self.start,
+                    'target': self.target,
                     'disabledNodes': self.disabledNodes}
             self.conn.sendall(json.dumps(data).encode('utf-8'))
 
