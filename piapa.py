@@ -244,7 +244,9 @@ class Map:
         self.herald.bind(('', 53626))
         self.herald.listen(0)
         self.conn, self.address = self.herald.accept()
-        self.conn.sendall(json.dumps(self.__dict__).encode('utf-8'))
+        data = dict(self.__dict__)
+        del data["adjMatrix"]
+        self.conn.sendall(json.dumps(self.data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
         return (self.nodeAmount * Y) + X
