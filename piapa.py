@@ -220,19 +220,13 @@ class Rover:
 
 
 class Map:
-    def __init__(self, start=None, target=None):
+    def __init__(self):
         # The map is divided in a 7x7 cells arranged in matrix format from [0,0] to [6,6]
         # start and target are 2x1 lists
         self.nodeAmount = 7
         self.stepSize = 0.3  # Size of the cells in m
-        if start is None:
-            self._start = [5, 5]
-        else:
-            self._start = start
-        if target is None:
-            self._target = [0, 0]
-        else:
-            self._target = target
+        self._start = None
+        self._target = None
         self.adjMatrixCreate()
         self.disabledNodes = []
         # the herald attribute will be the socket in charge of communicating with the main PC
@@ -256,10 +250,18 @@ class Map:
         self._target = value
         self.sendData('basic')
 
+    @target.deleter
+    def target(self):
+        del self._target
+
     @start.setter
     def start(self, value):
         self._start = value
         self.sendData('basic')
+
+    @start.deleter
+    def start(self):
+        del self._start
 
     def sendData(self, flag):
         if flag == 'basic':
