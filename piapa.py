@@ -238,15 +238,23 @@ class Map:
             self.targetY = target[0]
             self.targetX = target[1]
         self.adjMatrixCreate()
+        self.disabledNodes = []
         # the herald attribute will be the socket in charge of communicating with the main PC
         # It will use port 53626 for this function
         self.herald = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.herald.bind(('', 53626))
         self.herald.listen(0)
         self.conn, self.address = self.herald.accept()
-        data = dict(self.__dict__)
-        del data["adjMatrix"]
-        self.conn.sendall(json.dumps(data).encode('utf-8'))
+        self.sendData('basic')
+
+    def sendData(flag):
+        if flag == 'basic':
+            data = {'nodeAmount': self.nodeAmount,
+                    'stepSize': self.stepSize,
+                    'start': [self.targetY, self.targetX],
+                    'target': [self.startY, self.startX],
+                    'disabledNodes': self.disabledNodes}
+            self.conn.sendall(json.dumps(data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
         return (self.nodeAmount * Y) + X
@@ -276,6 +284,8 @@ class Map:
         pos = self.locateInAM(y, x)
         self.adjMatrix[pos] = -1
         self.adjMatrix[:, pos] = -1
+        self.disabledNodes.append([y,x])
+        self.sendData('basic')
 
     def dijkstra(self):
         for x in range(self.nodeAmount):
