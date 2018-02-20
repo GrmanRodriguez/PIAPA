@@ -247,7 +247,7 @@ class Map:
         self.conn, self.address = self.herald.accept()
         self.sendData('basic')
 
-    def sendData(flag):
+    def sendData(self, flag):
         if flag == 'basic':
             data = {'nodeAmount': self.nodeAmount,
                     'stepSize': self.stepSize,
@@ -284,7 +284,7 @@ class Map:
         pos = self.locateInAM(y, x)
         self.adjMatrix[pos] = -1
         self.adjMatrix[:, pos] = -1
-        self.disabledNodes.append([y,x])
+        self.disabledNodes.append([y, x])
         self.sendData('basic')
 
     def dijkstra(self):
