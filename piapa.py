@@ -226,13 +226,13 @@ class Map:
         self.nodeAmount = 7
         self.stepSize = 0.3  # Size of the cells in m
         if start is None:
-            self.start = [5, 5]
+            self._start = [5, 5]
         else:
-            self.start = start
+            self._start = start
         if target is None:
-            self.target = [0, 0]
+            self._target = [0, 0]
         else:
-            self.target = target
+            self._target = target
         self.adjMatrixCreate()
         self.disabledNodes = []
         # the herald attribute will be the socket in charge of communicating with the main PC
@@ -245,20 +245,20 @@ class Map:
 
     @property
     def target(self):
-        return self.target
+        return self._target
 
     @property
     def start(self):
-        return self.start
+        return self._start
 
     @target.setter
     def target(self, value):
-        self.target = value
+        self._target = value
         self.sendData('basic')
 
     @start.setter
     def start(self, value):
-        self.start = value
+        self._start = value
         self.sendData('basic')
 
     def sendData(self, flag):
