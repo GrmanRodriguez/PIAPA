@@ -287,6 +287,33 @@ class Map:
         self.disabledNodes.append([y, x])
         self.sendData('basic')
 
+    def enableNode(self, y, x):
+        if x > 0:
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y, x - 1)] = 10
+            self.adjMatrix[self.locateInAM(y, x - 1)][self.locateInAM(y, x)] = 10
+        if y > 0:
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y - 1, x)] = 10
+            self.adjMatrix[self.locateInAM(y - 1, x)][self.locateInAM(y, x)] = 10
+        if (x > 0) and (y > 0):
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y - 1, x - 1)] = 14
+            self.adjMatrix[self.locateInAM(y - 1, x - 1)][self.locateInAM(y, x)] = 14
+        if (y > 0) and (x + 1 < self.nodeAmount):
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y - 1, x + 1)] = 14
+            self.adjMatrix[self.locateInAM(y - 1, x + 1)][self.locateInAM(y, x)] = 14
+        if y + 1 < self.nodeAmount:
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x)] = 10
+            self.adjMatrix[self.locateInAM(y + 1, x)][self.locateInAM(y, x)] = 10
+        if x + 1 < self.nodeAmount:
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y, x + 1)] = 10
+            self.adjMatrix[self.locateInAM(y, x + 1)][self.locateInAM(y, x)] = 10
+        if (x > 0) and (y + 1 < self.nodeAmount):
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x - 1)] = 14
+            self.adjMatrix[self.locateInAM(y + 1, x - 1)][self.locateInAM(y, x)] = 14
+        if (x + 1 < self.nodeAmount) and (y + 1 < self.nodeAmount):
+            self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x + 1)] = 14
+            self.adjMatrix[self.locateInAM(y + 1, x + 1)][self.locateInAM(y, x)] = 14
+        self.disabledNodes.remove([y, x])
+
     def dijkstra(self):
         for x in range(self.nodeAmount):
             for y in range(self.nodeAmount):
