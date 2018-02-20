@@ -15,7 +15,7 @@ import json  # this library will allow us to send dictionaries through Wi-Fi as 
 # The Rover class will handle vehicle movement and create and update routes
 
 
-class Rover:
+class Rover(object):
 
     # The variables angle and position define the current state of the robot
     angle = 90
@@ -219,7 +219,7 @@ class Rover:
         GPIO.cleanup()
 
 
-class Map:
+class Map(object):
     def __init__(self):
         # The map is divided in a 7x7 cells arranged in matrix format from [0,0] to [6,6]
         # start and target are 2x1 lists
