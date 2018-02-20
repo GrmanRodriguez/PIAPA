@@ -226,17 +226,13 @@ class Map:
         self.nodeAmount = 7
         self.stepSize = 0.3  # Size of the cells in m
         if start is None:
-            self.startY = 5
-            self.startX = 5
+            self.start = [5, 5]
         else:
-            self.startY = start[0]
-            self.startX = start[1]
+            self.start = start
         if target is None:
-            self.targetY = 0
-            self.targetX = 0
+            self.target = [0, 0]
         else:
-            self.targetY = target[0]
-            self.targetX = target[1]
+            self.target = target
         self.adjMatrixCreate()
         self.disabledNodes = []
         # the herald attribute will be the socket in charge of communicating with the main PC
@@ -246,6 +242,17 @@ class Map:
         self.herald.listen(0)
         self.conn, self.address = self.herald.accept()
         self.sendData('basic')
+
+    @target.setter
+    def target(self, value):
+        self.target = value
+        self.sendData('basic')
+
+    @start.setter
+    def start(self, value):
+        self.start = value
+        self.sendData('basic')
+
 
     def sendData(self, flag):
         if flag == 'basic':
@@ -322,11 +329,11 @@ class Map:
                     nodeList = np.append(nodeList, [[x, y, float("inf"), 0]], axis=0)
                 else:
                     nodeList = np.array([[x, y, float("inf"), 0]])
-        nodeList[self.locateInAM(self.startY, self.startX)][2] = 0
+        nodeList[self.locateInAM(self.start[0], self.start[1])][2] = 0
         routes = []
         for x in range(self.nodeAmount ** 2):
             routes.append([])
-        routes[self.locateInAM(self.startY, self.startX)] = [[self.startY, self.startX]]
+        routes[self.locateInAM(self.start[0], self.start[1])] = [self.start]
 
         while 1:
             newList = nodeList[nodeList[:, 3] == 0]
@@ -363,9 +370,9 @@ class Map:
                     routes[self.locateInAM(element[0], element[1])].append(element.tolist())
             nodeList[newMin][3] = 1
             del(nears)
-            if newMin == self.locateInAM(self.targetY, self.targetX):
+            if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
-        return routes[self.locateInAM(self.targetY, self.targetX)][1:]
+        return routes[self.locateInAM(self.target[0], self.target[1])][1:]
 
 
 if __name__ == '__main__':
