@@ -313,6 +313,7 @@ class Map:
             self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x + 1)] = 14
             self.adjMatrix[self.locateInAM(y + 1, x + 1)][self.locateInAM(y, x)] = 14
         self.disabledNodes.remove([y, x])
+        self.sendData('basic')
 
     def dijkstra(self):
         for x in range(self.nodeAmount):
