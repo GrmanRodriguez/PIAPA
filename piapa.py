@@ -8,6 +8,7 @@ import numpy as np  # numpy will handle arrays
 import math  # math library for operations
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
+import socket  # library needed for communication with UI through Wi-Fi
 # --------------------------------------------------
 # Classes
 # The Rover class will handle vehicle movement and create and update routes
@@ -35,119 +36,6 @@ class Rover:
     def __init__(self):
         # Setup pins as outputs
         GPIO.setmode(GPIO.BOARD)  # GPIO Configuration
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    # Calibrate the Turn parameter
-    def calibrateTurn(self, Turn):
-        self.Turn = Turn
-
-    # Calibrate the Straight parameter
-    def calibrateStraight(self, Straight):
-        self.Straight = Straight
-
-    # The following 8 functions change the pins used for each wheel if needs be
-    def setRLF(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RLF = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    def setRLB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RLB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    def setRRF(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RRF = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    def setRRB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.RRB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    def setFLF(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FLF = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    def setFLB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FLB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    def setFRB(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FRB = pin
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self.RLF, GPIO.OUT)
-        GPIO.setup(self.RLB, GPIO.OUT)
-        GPIO.setup(self.RRF, GPIO.OUT)
-        GPIO.setup(self.RRB, GPIO.OUT)
-        GPIO.setup(self.FLF, GPIO.OUT)
-        GPIO.setup(self.FLB, GPIO.OUT)
-        GPIO.setup(self.FRF, GPIO.OUT)
-        GPIO.setup(self.FRB, GPIO.OUT)
-
-    def setFRL(self, pin):
-        GPIO.cleanup()  # Sadly as far as I know you can't clean up a single pin, so they must all be erased and reconfigured
-        self.FRL = pin
-        GPIO.setmode(GPIO.BOARD)
         GPIO.setup(self.RLF, GPIO.OUT)
         GPIO.setup(self.RLB, GPIO.OUT)
         GPIO.setup(self.RRF, GPIO.OUT)
@@ -349,6 +237,13 @@ class Map:
             self.targetY = target[0]
             self.targetX = target[1]
         self.adjMatrixCreate()
+        # the herald attribute will be the socket in charge of communicating with the main PC
+        # It will use port 53626 for this function
+        self.herald = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.herald.bind(('', 53626))
+        self.herald.listen(0)
+        self.conn, self.address = self.herald.accept()
+        self.conn.sendall(self.__dict__.encode('utf-8'))
 
     def locateInAM(self, Y, X):
         return (self.nodeAmount * Y) + X
