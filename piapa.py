@@ -114,13 +114,14 @@ class Map(object):
         del self._start
 
     def sendData(self, flag):
-        if flag == 'basic':
-            data = {'nodeAmount': self.nodeAmount,
-                    'stepSize': self.stepSize,
-                    'start': self.start,
-                    'target': self.target,
-                    'disabledNodes': self.disabledNodes}
-            self.conn.sendall(json.dumps(data).encode('utf-8'))
+        data = {'nodeAmount': self.nodeAmount,
+                'stepSize': self.stepSize,
+                'start': self.start,
+                'target': self.target,
+                'disabledNodes': self.disabledNodes}
+        if flag == 'route':
+            data["route"] = self.route
+        self.conn.sendall(json.dumps(data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
         return (self.nodeAmount * Y) + X
@@ -231,7 +232,9 @@ class Map(object):
             del(nears)
             if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
-        return routes[self.locateInAM(self.target[0], self.target[1])][1:]
+        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
+        self.sendData('route')
+        return self.route
 
 
 if __name__ == '__main__':
