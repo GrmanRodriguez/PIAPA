@@ -182,6 +182,11 @@ class Map(object):
         self.disabledNodes.remove([y, x])
         self.sendData('basic')
 
+    def enableAllNodes(self):
+        for x in range(0, nodeAmount):
+            for y in range(0, nodeAmount):
+                self.enableNode(y, x)
+
     def dijkstra(self):
         for x in range(self.nodeAmount):
             for y in range(self.nodeAmount):
