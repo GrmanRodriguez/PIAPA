@@ -3,6 +3,11 @@
 # Movement Manager
 # Pin and wheels management
 # --------------------------------------------------
+# Libraries
+import RPi.GPIO as GPIO  # Raspberry GPIO pins
+import time  # time library for delays
+from movement import MovementManager
+# --------------------------------------------------
 
 
 class MovementManager():
