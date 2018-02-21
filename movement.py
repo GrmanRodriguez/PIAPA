@@ -5,7 +5,7 @@
 # --------------------------------------------------
 
 
-class MovementManager(object):
+class MovementManager():
     gridSize = 0.3  # The size of the cells in meters
     RLF = 19  # The forward-moving end of the rear left motor is connected to GPIO pin 19
     RLB = 21  # The backwards-moving end of the rear left motor is connected to GPIO pin 21
