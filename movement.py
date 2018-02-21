@@ -6,7 +6,6 @@
 # Libraries
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
-from movement import MovementManager
 # --------------------------------------------------
 
 
