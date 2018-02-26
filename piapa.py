@@ -189,6 +189,7 @@ class Map(object):
                 self.enableNode(element[0], element[1])
             except Exception as e:
                 pass
+        self.sendData('basic')
 
     def dijkstra(self):
         for x in range(self.nodeAmount):
