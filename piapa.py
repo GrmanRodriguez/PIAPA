@@ -248,6 +248,8 @@ class Map(object):
 if __name__ == '__main__':
     r = Rover()
     m = Map()
+    m.start = [0, 0]
+    m.target = [6, 5]
     m.disableNode(5, 4)
     m.disableNode(4, 4)
     m.disableNode(3, 4)
