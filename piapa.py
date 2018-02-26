@@ -44,30 +44,6 @@ class Rover(object, MovementManager):
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
         self.position = [y, x]  # Finally, update the state of the vehicle
 
-    # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
-    def createTasks(self, points):
-        for element in points:
-            self.goToPoint(element[0], element[1])
-
-    # stepTasks will create the generator object from the tasks list
-    def stepTasks(self):
-        while True:
-            try:
-                self.tasks[0]()
-                del self.tasks[0]
-                yield
-            except Exception:
-                break
-
-    # executeTasks will iterate over the generator object, performing each task as it should
-    def executeTasks(self):
-        orders = self.stepTasks()
-        while True:
-            try:
-                next(orders)
-            except StopIteration:
-                break
-
 
 class Map(object):
     def __init__(self):
@@ -85,7 +61,7 @@ class Map(object):
         self.herald.bind(('', 53626))
         self.herald.listen(0)
         self.conn, self.address = self.herald.accept()
-        self.sendData('basic')
+        self.sendData()
 
     @property
     def target(self):
@@ -98,7 +74,7 @@ class Map(object):
     @target.setter
     def target(self, value):
         self._target = value
-        self.sendData('basic')
+        self.sendData()
 
     @target.deleter
     def target(self):
@@ -107,20 +83,26 @@ class Map(object):
     @start.setter
     def start(self, value):
         self._start = value
-        self.sendData('basic')
+        self.sendData()
 
     @start.deleter
     def start(self):
         del self._start
 
-    def sendData(self, flag):
+    def sendData(self, *args, **kwargs):
         data = {'nodeAmount': self.nodeAmount,
                 'stepSize': self.stepSize,
                 'start': self.start,
                 'target': self.target,
                 'disabledNodes': self.disabledNodes}
-        if flag == 'route':
-            data["route"] = self.route
+        if 'type' in kwargs:
+            if kwargs['type'] == 'route':
+                data["route"] = self.route
+            elif kwargs['type'] == 'pos':
+                data['position'] == kwargs['pos']
+            elif kwargs['type'] == 'pos_route':
+                data["route"] = self.route
+                data['position'] == kwargs['pos']
         self.conn.sendall(json.dumps(data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
@@ -152,7 +134,7 @@ class Map(object):
         self.adjMatrix[pos] = -1
         self.adjMatrix[:, pos] = -1
         self.disabledNodes.append([y, x])
-        self.sendData('basic')
+        self.sendData()
 
     def enableNode(self, y, x):
         if x > 0:
@@ -180,7 +162,7 @@ class Map(object):
             self.adjMatrix[self.locateInAM(y, x)][self.locateInAM(y + 1, x + 1)] = 14
             self.adjMatrix[self.locateInAM(y + 1, x + 1)][self.locateInAM(y, x)] = 14
         self.disabledNodes.remove([y, x])
-        self.sendData('basic')
+        self.sendData()
 
     def enableAllNodes(self):
         dN_copy = list(self.disabledNodes)
@@ -189,7 +171,7 @@ class Map(object):
                 self.enableNode(element[0], element[1])
             except Exception as e:
                 pass
-        self.sendData('basic')
+        self.sendData()
 
     def dijkstra(self):
         for x in range(self.nodeAmount):
@@ -242,8 +224,43 @@ class Map(object):
             if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
         self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
-        self.sendData('route')
+        self.sendData({'type': 'route'})
         return self.route
+
+# createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
+
+
+def createTasks(points):
+    tasks = []
+    global r
+    global m
+    for element in points:
+        tasks.append(lambda: r.goToPoint(element[0], element[1]))
+        tasks.append(lambda: m.sendData({'type': 'pos_route', 'pos': r.position}))
+    return tasks
+
+# stepTasks will create the generator object from the tasks list
+
+
+def stepTasks(tasks):
+    while True:
+        try:
+            tasks[0]()
+            del tasks[0]
+            yield
+        except Exception:
+            break
+
+# executeTasks will iterate over the generator object, performing each task as it should
+
+
+def executeTasks(tasks):
+    orders = stepTasks(tasks)
+    while True:
+        try:
+            next(orders)
+        except StopIteration:
+            break
 
 
 if __name__ == '__main__':
@@ -262,5 +279,6 @@ if __name__ == '__main__':
     m.disableNode(5, 1)
     m.disableNode(1, 2)
     m.disableNode(0, 2)
-    r.createTasks(m.dijkstra())
+    tasks = createTasks(m.dijkstra())
+    executeTasks(tasks)
     r.quit()
