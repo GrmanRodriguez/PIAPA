@@ -89,7 +89,7 @@ class Map(object):
     def start(self):
         del self._start
 
-    def sendData(self, *args, **kwargs):
+    def sendData(self, pos=None, **kwargs):
         data = {'nodeAmount': self.nodeAmount,
                 'stepSize': self.stepSize,
                 'start': self.start,
@@ -99,10 +99,10 @@ class Map(object):
             if kwargs['type'] == 'route':
                 data["route"] = self.route
             elif kwargs['type'] == 'pos':
-                data['position'] = args[0]
+                data['position'] = pos
             elif kwargs['type'] == 'pos_route':
                 data["route"] = self.route
-                data['position'] = args[0]
+                data['position'] = pos
         self.conn.sendall(json.dumps(data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
