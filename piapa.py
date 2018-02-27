@@ -99,10 +99,10 @@ class Map(object):
             if kwargs['type'] == 'route':
                 data["route"] = self.route
             elif kwargs['type'] == 'pos':
-                data['position'] == kwargs['pos']
+                data['position'] = pos
             elif kwargs['type'] == 'pos_route':
                 data["route"] = self.route
-                data['position'] == pos
+                data['position'] = pos
         self.conn.sendall(json.dumps(data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
@@ -236,7 +236,7 @@ def createTasks(points):
     global m
     for element in points:
         tasks.append(lambda: r.goToPoint(element[0], element[1]))
-        tasks.append(lambda: m.sendData(type = 'pos_route', pos = r.position))
+        tasks.append(lambda: m.sendData(type='pos_route', pos=r.position))
     return tasks
 
 # stepTasks will create the generator object from the tasks list
