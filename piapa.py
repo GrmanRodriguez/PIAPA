@@ -102,7 +102,7 @@ class Map(object):
                 data['position'] == kwargs['pos']
             elif kwargs['type'] == 'pos_route':
                 data["route"] = self.route
-                data['position'] == kwargs['pos']
+                data['position'] == pos
         self.conn.sendall(json.dumps(data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
