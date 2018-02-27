@@ -99,10 +99,10 @@ class Map(object):
             if kwargs['type'] == 'route':
                 data["route"] = self.route
             elif kwargs['type'] == 'pos':
-                data['position'] = pos
+                data['position'] = args[0]
             elif kwargs['type'] == 'pos_route':
                 data["route"] = self.route
-                data['position'] = pos
+                data['position'] = args[0]
         self.conn.sendall(json.dumps(data).encode('utf-8'))
 
     def locateInAM(self, Y, X):
