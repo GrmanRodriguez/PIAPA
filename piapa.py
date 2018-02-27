@@ -236,7 +236,7 @@ def createTasks(points):
     global m
     for element in points:
         tasks.append(lambda: r.goToPoint(element[0], element[1]))
-        tasks.append(lambda: m.sendData({'type': 'pos_route', 'pos': r.position}))
+        tasks.append(lambda: m.sendData(type = 'pos_route', pos = r.position))
     return tasks
 
 # stepTasks will create the generator object from the tasks list
