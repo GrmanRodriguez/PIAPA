@@ -13,8 +13,8 @@ class MovementManager():
     gridSize = 0.3  # The size of the cells in meters
     RLF = 19  # The forward-moving end of the rear left motor is connected to GPIO pin 19
     RLB = 21  # The backwards-moving end of the rear left motor is connected to GPIO pin 21
-    RRF = 8  # The forward-moving end of the rear right motor is connected to GPIO pin 8
-    RRB = 10  # The backwards-moving end of the rear right motor is connected to GPIO pin 10
+    RRF = 22  # The forward-moving end of the rear right motor is connected to GPIO pin 8
+    RRB = 24  # The backwards-moving end of the rear right motor is connected to GPIO pin 10
     FLF = 11  # The forward-moving end of the front left motor is connected to GPIO pin 11
     FLB = 13  # The backwards-moving end of the front left motor is connected to GPIO pin 13
     FRF = 16  # The forward-moving end of the front right motor is connected to GPIO pin 16
