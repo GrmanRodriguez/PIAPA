@@ -180,7 +180,7 @@ class ArmManager(serial.Serial):
         self.write(self.neutralArmPosition + self.openedHand)
 
     def so(self):
-        self.write(self.strechedArmPosition + self.openedHand)
+        self.write(self.stretchedArmPosition + self.openedHand)
 
     def nc(self):
         self.write(self.neutralArmPosition + self.closedHand)
