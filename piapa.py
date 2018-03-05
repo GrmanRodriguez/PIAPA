@@ -10,13 +10,13 @@ import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 import socket  # library needed for communication with UI through Wi-Fi
 import json  # this library will allow us to send dictionaries through Wi-Fi as strings, amongst other things
-from movement import MovementManager
+from util import MovementManager, ArmManager
 # --------------------------------------------------
 # Classes
 # The Rover class will handle vehicle movement and create and update routes
 
 
-class Rover(object, MovementManager):
+class Rover(object, MovementManager, ArmManager):
 
     # The variables angle and position define the current state of the robot
     angle = 90
@@ -26,6 +26,8 @@ class Rover(object, MovementManager):
 
     def __init__(self):
         MovementManager.__init__(self)
+        ArmManager.__init__(self)
+        self.no()
 
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
