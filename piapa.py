@@ -16,7 +16,7 @@ from util import MovementManager, ArmManager
 # The Rover class will handle vehicle movement and create and update routes
 
 
-class Rover(object, MovementManager, ArmManager):
+class Rover(MovementManager, ArmManager):
 
     # The variables angle and position define the current state of the robot
     angle = 90
