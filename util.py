@@ -171,8 +171,8 @@ class MovementManager():
 class ArmManager(serial.Serial):
     def __init__(self):
         serial.Serial.__init__(self, '/dev/serial0', 115200)
-        self.neutralArmPosition = '#0 p1800 s300 #1 p2450 s300 #2 p3200 s300 #3 p0 '
-        self.stretchedArmPosition = '#0 p1800 s300 #1 p1350 s300 #2 p1700 s300 #3 p2200 s300 '
+        self.neutralArmPosition = '#0 p1725 s300 #1 p2450 s300 #2 p3200 s300 #3 p0 '
+        self.stretchedArmPosition = '#0 p1725 s300 #1 p1350 s300 #2 p1700 s300 #3 p2200 s300 '
         self.closedHand = '#4 p2400\r\n'
         self.openedHand = '#4 p900\r\n'
 
