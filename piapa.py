@@ -50,18 +50,26 @@ class Rover(MovementManager, ArmManager):
 
     def pick(self):
         self.no()
+        time.sleep(1)
         self.so()
+        time.sleep(5)
         self.grip()
+        time.sleep(2)
         self.nc()
+        time.sleep(5)
         self.armOff()
         if not self.hasObject:
             self.hasObject = True
 
     def place(self):
         self.nc()
+        time.sleep(1)
         self.sc()
+        time.sleep(5)
         self.release()
+        time.sleep(2)
         self.no()
+        time.sleep(5)
         self.armOff()
         if self.hasObject:
             self.hasObject = False
