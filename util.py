@@ -22,7 +22,7 @@ class MovementManager():
     FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
     turnClockw = 5.2  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
     turnCounterClockw = 5.3  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
-    Straight = 1.1  # Time needed by the robot to advance 1 meter (TUNED)
+    Straight = 0.7  # Time needed by the robot to advance 1 meter (TUNED)
 
     def __init__(self):
         # Setup pins as outputs
