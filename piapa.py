@@ -23,11 +23,13 @@ class Rover(MovementManager, ArmManager):
     position = [5, 5]
     tasks = []  # This variable defines the tasks the vehicle must execute
     gridSize = 0.3  # The size of the cells in meters
+    hasObject = False  # To know if it's in a picking phase or placing phase
 
     def __init__(self):
         MovementManager.__init__(self)
         ArmManager.__init__(self)
         self.no()
+        self.armOff()
 
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
@@ -45,6 +47,24 @@ class Rover(MovementManager, ArmManager):
         distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
         self.position = [y, x]  # Finally, update the state of the vehicle
+
+    def pick(self):
+        self.no()
+        self.so()
+        self.grip()
+        self.nc()
+        self.armOff()
+        if not self.hasObject:
+            self.hasObject = True
+
+    def place(self):
+        self.nc()
+        self.sc()
+        self.release()
+        self.no()
+        self.armOff()
+        if self.hasObject:
+            self.hasObject = False
 
 
 class Map(object):
@@ -225,7 +245,7 @@ class Map(object):
             del(nears)
             if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
-        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
+        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:-1]
         self.sendData({'type': 'route'})
         return self.route
 
@@ -239,6 +259,10 @@ def createTasks(points):
     for element in points:
         tasks.append(lambda: r.goToPoint(element[0], element[1]))
         tasks.append(lambda: m.sendData(type='pos_route', pos=r.position))
+    if r.hasObject:
+        tasks.append(r.place)
+    else:
+        tasks.append(r.pick)
     return tasks
 
 # stepTasks will create the generator object from the tasks list
