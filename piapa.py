@@ -262,8 +262,6 @@ class Map(object):
 
 def createTasks(points):
     tasks = []
-    global r
-    global m
     for element in points:
         tasks.append(lambda: r.goToPoint(element[0], element[1]))
         tasks.append(lambda: m.sendData(type='pos_route', pos=r.position))
