@@ -293,6 +293,8 @@ def executeTasks(tasks):
 
 if __name__ == '__main__':
     r = Rover()
+    r.position = [0, 0]
+    r.angle = 90
     m = Map()
     m.start = [0, 0]
     m.target = [5, 3]
