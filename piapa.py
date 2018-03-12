@@ -265,9 +265,6 @@ def createTasks(points):
     for element in points:
         tasks.append(lambda: r.goToPoint(element[0], element[1]))
         tasks.append(lambda: m.sendData(type='pos_route', pos=r.position))
-    if r.hasObject:
-        tasks.append(r.place)
-    else:
         tasks.append(r.pick)
     return tasks
 
