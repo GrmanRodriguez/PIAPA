@@ -291,7 +291,7 @@ if __name__ == '__main__':
     r = Rover()
     m = Map()
     m.start = [0, 0]
-    m.target = [5, 3]
+    m.target = [4, 1]
     m.disableNode(0, 1)
     m.disableNode(1, 1)
     m.disableNode(2, 0)
@@ -303,8 +303,8 @@ if __name__ == '__main__':
     m.disableNode(1, 4)
     m.disableNode(0, 5)
     createTasks(m.dijkstra(), r, m)
-    m.start = [5, 3]
-    m.target = [0, 0]
+    m.start = [3, 1]
+    m.target = [1, 6]
     tasks = createTasks(m.dijkstra(), r, m)
     r.quit()
     r.close()
