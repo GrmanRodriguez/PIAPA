@@ -304,4 +304,8 @@ if __name__ == '__main__':
     m.disableNode(4, 2)
     tasks = createTasks(m.dijkstra())
     executeTasks(tasks)
+    m.start = [5, 3]
+    m.target = [0, 0]
+    tasks = createTasks(m.dijkstra())
+    executeTasks(tasks)
     r.quit()
