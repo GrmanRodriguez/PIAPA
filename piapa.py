@@ -20,7 +20,7 @@ class Rover(MovementManager, ArmManager):
 
     # The variables angle and position define the current state of the robot
     angle = 90
-    position = [5, 5]
+    position = [0, 0]
     tasks = []  # This variable defines the tasks the vehicle must execute
     gridSize = 0.3  # The size of the cells in meters
     hasObject = False  # To know if it's in a picking phase or placing phase
