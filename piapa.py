@@ -19,7 +19,7 @@ from util import MovementManager, ArmManager
 class Rover(MovementManager, ArmManager):
 
     # The variables angle and position define the current state of the robot
-    angle = 90
+    angle = -90
     position = [0, 0]
     tasks = []  # This variable defines the tasks the vehicle must execute
     gridSize = 0.3  # The size of the cells in meters
@@ -257,7 +257,10 @@ def createTasks(points, r, m):
     for element in points:
         r.goToPoint(element[0], element[1])
         m.sendData(type='pos_route', pos=r.position)
-    r.pick()
+    if r.hasObject:
+        r.place()
+    else:
+        r.pick()
 
 
 # stepTasks will create the generator object from the tasks list
@@ -286,16 +289,19 @@ def executeTasks(tasks):
 
 if __name__ == '__main__':
     r = Rover()
-    r.position = [0, 0]
-    r.angle = 90
     m = Map()
     m.start = [0, 0]
     m.target = [5, 3]
     m.disableNode(0, 1)
-    m.disableNode(0, 2)
-    m.disableNode(3, 0)
+    m.disableNode(1, 1)
+    m.disableNode(2, 0)
+    m.disableNode(2, 2)
     m.disableNode(3, 2)
-    m.disableNode(4, 2)
+    m.disableNode(5, 1)
+    m.disableNode(3, 3)
+    m.disableNode(2, 4)
+    m.disableNode(1, 4)
+    , .disableNode(0, 5)
     createTasks(m.dijkstra(), r, m)
     m.start = [5, 3]
     m.target = [0, 0]
