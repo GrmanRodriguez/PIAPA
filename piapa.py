@@ -301,7 +301,7 @@ if __name__ == '__main__':
     m.disableNode(3, 3)
     m.disableNode(2, 4)
     m.disableNode(1, 4)
-    , .disableNode(0, 5)
+    m.disableNode(0, 5)
     createTasks(m.dijkstra(), r, m)
     m.start = [5, 3]
     m.target = [0, 0]
