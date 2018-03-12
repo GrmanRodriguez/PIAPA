@@ -306,3 +306,5 @@ if __name__ == '__main__':
     m.target = [0, 0]
     tasks = createTasks(m.dijkstra(), r, m)
     r.quit()
+    r.close()
+    m.herald.close()
