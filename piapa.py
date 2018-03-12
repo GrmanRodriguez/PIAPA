@@ -296,18 +296,12 @@ if __name__ == '__main__':
     r = Rover()
     m = Map()
     m.start = [0, 0]
-    m.target = [6, 5]
-    m.disableNode(5, 4)
-    m.disableNode(4, 4)
-    m.disableNode(3, 4)
-    m.disableNode(1, 4)
-    m.disableNode(4, 3)
-    m.disableNode(3, 3)
-    m.disableNode(1, 3)
-    m.disableNode(5, 2)
-    m.disableNode(5, 1)
-    m.disableNode(1, 2)
+    m.target = [5, 3]
+    m.disableNode(0, 1)
     m.disableNode(0, 2)
+    m.disableNode(3, 0)
+    m.disableNode(3, 2)
+    m.disableNode(4, 2)
     tasks = createTasks(m.dijkstra())
     executeTasks(tasks)
     r.quit()
