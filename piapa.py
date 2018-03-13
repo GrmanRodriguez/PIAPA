@@ -252,7 +252,7 @@ class Map(object):
             del(nears)
             if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
-        self.route = routes[self.locateInAM(self.target[0], self.target[1])]
+        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
         self.sendData({'type': 'route'})
         return self.route
 
