@@ -41,6 +41,12 @@ class Rover(MovementManager, ArmManager):
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
         self.position = [y, x]  # Finally, update the state of the vehicle
 
+    def turnToPoint(self, y, x):
+        ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
+        toTurn = ang - self.angle
+        self.turn(toTurn)
+        self.angle = ang  # Update the state of the vehicle
+
     def pick(self):
         self.no()
         time.sleep(1)
@@ -246,7 +252,7 @@ class Map(object):
             del(nears)
             if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
-        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:-1]
+        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
         self.sendData({'type': 'route'})
         return self.route
 
@@ -254,9 +260,10 @@ class Map(object):
 
 
 def createTasks(points, r, m):
-    for element in points:
+    for element in points[:-1]:
         r.goToPoint(element[0], element[1])
         m.sendData(type='pos_route', pos=r.position)
+    r.turnToPoint(points[-1][0], points[-1][1])
     if r.hasObject:
         r.place()
     else:
