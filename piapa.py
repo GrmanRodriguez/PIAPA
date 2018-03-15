@@ -293,7 +293,7 @@ def executeTasks(tasks):
         except StopIteration:
             break
 
-def test(r,m):
+def test():
 	r.position = [0,0]
 	r.angle = -90
 	r.hasObject = False
@@ -316,7 +316,7 @@ if __name__ == '__main__':
     m.disableNode(3,3)
     m.disableNode(2,3)
     m.disableNode(2,4)
-    test(r,m)
+    test()
     r.quit()
     r.close()
     m.herald.close()
