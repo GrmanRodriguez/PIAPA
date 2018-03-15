@@ -37,7 +37,7 @@ class Rover(MovementManager, ArmManager):
         if ang < 0:
         	ang = 360 + ang
         toTurn = (ang - self.angle)
-        if abs(toTurn) == 270 or abs(toTurn) == 360:
+        if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
         	toTurn = toTurn - 360 * np.sign(toTurn)
         self.turn(toTurn)
         self.angle = ang
@@ -50,7 +50,7 @@ class Rover(MovementManager, ArmManager):
         if ang < 0:
         	ang = 360 + ang
         toTurn = ang - self.angle
-        if abs(toTurn) == 270 or abs(toTurn) == 360:
+        if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
         	toTurn = toTurn - 360 * np.sign(toTurn)
         self.turn(toTurn)
         self.angle = ang
