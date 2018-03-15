@@ -19,7 +19,7 @@ from util import MovementManager, ArmManager
 class Rover(MovementManager, ArmManager):
 
     # The variables angle and position define the current state of the robot
-    angle = -90
+    angle = 270
     position = [0, 0]
     tasks = []  # This variable defines the tasks the vehicle must execute
     gridSize = 0.3  # The size of the cells in meters
@@ -38,7 +38,10 @@ class Rover(MovementManager, ArmManager):
         if abs(toTurn>=360):
         	toTurn = toTurn % 360
         self.turn(toTurn)
-        self.angle = ang  # Update the state of the vehicle
+        if ang < 0:
+        	self.angle = 360 + ang  # Update the state of the vehicle
+        else:
+        	self.angle = ang
         distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
         self.position = [y, x]  # Finally, update the state of the vehicle
@@ -49,8 +52,11 @@ class Rover(MovementManager, ArmManager):
         if abs(toTurn)>=360:
         	toTurn = toTurn % 360
         self.turn(toTurn)
-        self.angle = ang  # Update the state of the vehicle
-
+        if ang < 0:
+        	self.angle = 360 + ang  # Update the state of the vehicle
+        else:
+        	self.angle = ang
+        	
     def pick(self):
         self.no()
         time.sleep(1)
