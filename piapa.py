@@ -34,7 +34,7 @@ class Rover(MovementManager, ArmManager):
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-        toTurn = ang - self.angle
+        toTurn = (ang - self.angle) % 360
         self.turn(toTurn)
         self.angle = ang  # Update the state of the vehicle
         distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
@@ -43,7 +43,7 @@ class Rover(MovementManager, ArmManager):
 
     def turnToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-        toTurn = ang - self.angle
+        toTurn = (ang - self.angle) % 360
         self.turn(toTurn)
         self.angle = ang  # Update the state of the vehicle
 
@@ -293,26 +293,30 @@ def executeTasks(tasks):
         except StopIteration:
             break
 
+def test(r,m):
+	r.position = [0,0]
+	r.angle = -90
+	r.hasObject = False
+	m.start = r.position
+	m.target=[4,3]
+	createTasks(m.dijkstra(),r,m)
+	m.start = r.position
+	m.target = [6,0]
+	createTasks(m.dijkstra(),r,m)
 
 if __name__ == '__main__':
     r = Rover()
     m = Map()
-    m.start = [0, 0]
-    m.target = [4, 1]
-    m.disableNode(0, 1)
-    m.disableNode(1, 1)
-    m.disableNode(2, 0)
-    m.disableNode(2, 2)
-    m.disableNode(3, 2)
-    m.disableNode(5, 1)
-    m.disableNode(3, 3)
-    m.disableNode(2, 4)
-    m.disableNode(1, 4)
-    m.disableNode(0, 5)
-    createTasks(m.dijkstra(), r, m)
-    m.start = [3, 1]
-    m.target = [1, 6]
-    tasks = createTasks(m.dijkstra(), r, m)
+    m.disableNode(0,1)
+    m.disableNode(1,1)
+    m.disableNode(3,0)
+    m.disableNode(3,2)
+    m.disableNode(4,2)
+    m.disableNode(5,2)
+    m.disableNode(3,3)
+    m.disableNode(2,3)
+    m.disableNode(2,4)
+    test(r,m)
     r.quit()
     r.close()
     m.herald.close()
