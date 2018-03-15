@@ -37,7 +37,10 @@ class Rover(MovementManager, ArmManager):
         if ang < 0:
         	ang = 360 + ang
         toTurn = (ang - self.angle)
+        if abs(toTurn) == 270 or abs(toTurn) == 360:
+        	toTurn = toTurn - 360 * np.sign(toTurn)
         self.turn(toTurn)
+        self.angle = ang
         distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
         self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
         self.position = [y, x]  # Finally, update the state of the vehicle
@@ -47,8 +50,11 @@ class Rover(MovementManager, ArmManager):
         if ang < 0:
         	ang = 360 + ang
         toTurn = ang - self.angle
+        if abs(toTurn) == 270 or abs(toTurn) == 360:
+        	toTurn = toTurn - 360 * np.sign(toTurn)
         self.turn(toTurn)
-        
+        self.angle = ang
+
     def pick(self):
         self.no()
         time.sleep(1)
