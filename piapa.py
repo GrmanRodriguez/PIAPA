@@ -34,7 +34,7 @@ class Rover(MovementManager, ArmManager):
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-        if ang < 0
+        if ang < 0:
         	ang = 360 + ang
         toTurn = (ang - self.angle)
         self.turn(toTurn)
@@ -44,7 +44,7 @@ class Rover(MovementManager, ArmManager):
 
     def turnToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-        if ang < 0
+        if ang < 0:
         	ang = 360 + ang
         toTurn = ang - self.angle
         self.turn(toTurn)
