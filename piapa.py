@@ -10,6 +10,8 @@ import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 import socket  # library needed for communication with UI through Wi-Fi
 import json  # this library will allow us to send dictionaries through Wi-Fi as strings, amongst other things
+from smbus import SMBus
+import struct
 from util import MovementManager, ArmManager
 # --------------------------------------------------
 # Classes
@@ -28,6 +30,7 @@ class Rover(MovementManager, ArmManager):
     def __init__(self):
         MovementManager.__init__(self)
         ArmManager.__init__(self)
+        self.imu = SMBus(1)
         self.no()
         self.armOff()
 
@@ -35,10 +38,10 @@ class Rover(MovementManager, ArmManager):
     def goToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         if ang < 0:
-        	ang = 360 + ang
+            ang = 360 + ang
         toTurn = (ang - self.angle)
         if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
-        	toTurn = toTurn - 360 * np.sign(toTurn)
+            toTurn = toTurn - 360 * np.sign(toTurn)
         self.turn(toTurn)
         self.angle = ang
         distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
@@ -48,10 +51,10 @@ class Rover(MovementManager, ArmManager):
     def turnToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         if ang < 0:
-        	ang = 360 + ang
+            ang = 360 + ang
         toTurn = ang - self.angle
         if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
-        	toTurn = toTurn - 360 * np.sign(toTurn)
+            toTurn = toTurn - 360 * np.sign(toTurn)
         self.turn(toTurn)
         self.angle = ang
 
@@ -80,6 +83,18 @@ class Rover(MovementManager, ArmManager):
         self.armOff()
         if self.hasObject:
             self.hasObject = False
+
+    def readAngle(self):
+        X = [self.imu.read_byte(0x68, 0x04), self.imu.read_byte(0x68, 0x03)]
+        Y = [self.imu.read_byte(0x68, 0x06), self.imu.read_byte(0x68, 0x05)]
+        bX = ''.join(chr(i) for i in X)
+        readingX = struct.unpack('>f', bX)
+        bY = ''.join(chr(i) for i in Y)
+        readingY = struct.unpack('>f', bY)
+        reading = math.atan2(readingY, readingX) * 180 / math.pi
+        print('The results for X were: {} in high byte, {} for low byte, total measurement is {}'.format(X[0], X[1], readingX))
+        print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
+        print('Angle is {}'.format(reading))
 
 
 class Map(object):
@@ -301,29 +316,31 @@ def executeTasks(tasks):
         except StopIteration:
             break
 
+
 def test():
-	r.position = [0,0]
-	r.angle = -90
-	r.hasObject = False
-	m.start = r.position
-	m.target=[4,3]
-	createTasks(m.dijkstra(),r,m)
-	m.start = r.position
-	m.target = [6,0]
-	createTasks(m.dijkstra(),r,m)
+    r.position = [0, 0]
+    r.angle = -90
+    r.hasObject = False
+    m.start = r.position
+    m.target = [4, 3]
+    createTasks(m.dijkstra(), r, m)
+    m.start = r.position
+    m.target = [6, 0]
+    createTasks(m.dijkstra(), r, m)
+
 
 if __name__ == '__main__':
     r = Rover()
     m = Map()
-    m.disableNode(0,1)
-    m.disableNode(1,1)
-    m.disableNode(3,0)
-    m.disableNode(3,2)
-    m.disableNode(4,2)
-    m.disableNode(5,2)
-    m.disableNode(3,3)
-    m.disableNode(2,3)
-    m.disableNode(2,4)
+    m.disableNode(0, 1)
+    m.disableNode(1, 1)
+    m.disableNode(3, 0)
+    m.disableNode(3, 2)
+    m.disableNode(4, 2)
+    m.disableNode(5, 2)
+    m.disableNode(3, 3)
+    m.disableNode(2, 3)
+    m.disableNode(2, 4)
     test()
     r.quit()
     r.close()
