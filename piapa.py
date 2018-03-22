@@ -85,8 +85,8 @@ class Rover(MovementManager, ArmManager):
             self.hasObject = False
 
     def readAngle(self):
-        X = [self.imu.read_byte(0x68, 0x04), self.imu.read_byte(0x68, 0x03)]
-        Y = [self.imu.read_byte(0x68, 0x06), self.imu.read_byte(0x68, 0x05)]
+        X = [self.imu.read_byte_data(0x68, 0x04), self.imu.read_byte_data(0x68, 0x03)]
+        Y = [self.imu.read_byte_data(0x68, 0x06), self.imu.read_byte_data(0x68, 0x05)]
         bX = ''.join(chr(i) for i in X)
         readingX = struct.unpack('>f', bX)
         bY = ''.join(chr(i) for i in Y)
