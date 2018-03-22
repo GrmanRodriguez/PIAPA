@@ -87,10 +87,8 @@ class Rover(MovementManager, ArmManager):
     def readAngle(self):
         X = [self.imu.read_byte_data(0x68, 0x04), self.imu.read_byte_data(0x68, 0x03)]
         Y = [self.imu.read_byte_data(0x68, 0x06), self.imu.read_byte_data(0x68, 0x05)]
-        bX = ''.join(chr(i) for i in X)
-        readingX = struct.unpack('>f', bX)
-        bY = ''.join(chr(i) for i in Y)
-        readingY = struct.unpack('>f', bY)
+        readingX = X[0] * 256 + X[1]
+        readingY = Y[0] * 256 + Y[1]
         reading = math.atan2(readingY, readingX) * 180 / math.pi
         print('The results for X were: {} in high byte, {} for low byte, total measurement is {}'.format(X[0], X[1], readingX))
         print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
