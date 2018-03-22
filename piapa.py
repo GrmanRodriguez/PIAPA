@@ -85,8 +85,8 @@ class Rover(MovementManager, ArmManager):
             self.hasObject = False
 
     def readAngle(self):
-        X = [self.imu.read_byte(0x04), self.imu.read_byte(0x03)]
-        Y = [self.imu.read_byte(0x06), self.imu.read_byte(0x05)]
+        X = [self.imu.read_byte_data(0x68, 0x04), self.imu.read_byte_data(0x68, 0x03)]
+        Y = [self.imu.read_byte_data(0x68, 0x06), self.imu.read_byte_data(0x68, 0x05)]
         readingX = X[0] * 256 + X[1]
         readingY = Y[0] * 256 + Y[1]
         reading = math.atan2(readingY, readingX) * 180 / math.pi
