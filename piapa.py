@@ -33,7 +33,6 @@ class Rover(MovementManager, ArmManager):
         self.imu = SMBus(1)
         self.imu.write_byte_data(0x68, 0x6b, 0x00)
         self.imu.write_byte_data(0x68, 0x37, 0x22)
-        self.imu.write_byte_data(0x0c, 0x0a, 0x06)
         self.no()
         self.armOff()
 
@@ -88,6 +87,8 @@ class Rover(MovementManager, ArmManager):
             self.hasObject = False
 
     def readAngle(self):
+        self.imu.write_byte_data(0x0c, 0x0a, 0x00)
+        self.imu.write_byte_data(0x0c, 0x0a, 0x06)
         X = [self.imu.read_byte_data(0x0c, 0x04), self.imu.read_byte_data(0x0C, 0x03)]
         Y = [self.imu.read_byte_data(0x0c, 0x06), self.imu.read_byte_data(0x0C, 0x05)]
         readingX = X[0] * 256 + X[1]
