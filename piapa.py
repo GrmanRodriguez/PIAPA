@@ -97,6 +97,7 @@ class Rover(MovementManager, ArmManager):
         print('The results for X were: {} in high byte, {} for low byte, total measurement is {}'.format(X[0], X[1], readingX))
         print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
         print('Angle is {}'.format(reading))
+        self.imu.write_byte_data(0x0c, 0x0a, 0x00)
 
 
 class Map(object):
