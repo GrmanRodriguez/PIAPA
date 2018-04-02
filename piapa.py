@@ -26,6 +26,8 @@ class Rover(MovementManager, ArmManager):
     tasks = []  # This variable defines the tasks the vehicle must execute
     gridSize = 0.3  # The size of the cells in meters
     hasObject = False  # To know if it's in a picking phase or placing phase
+    magXMean = 0  # In order to calibrate the magnetometer
+    magYMean = 0  # In order to calibrate the magnetometer
 
     def __init__(self):
         MovementManager.__init__(self)
@@ -86,7 +88,7 @@ class Rover(MovementManager, ArmManager):
         if self.hasObject:
             self.hasObject = False
 
-    def readAngle(self):
+    def readMags(self):
         self.imu.write_byte_data(0x0c, 0x0a, 0x00)
         time.sleep(0.01)
         self.imu.write_byte_data(0x0c, 0x0a, 0x06)
@@ -99,11 +101,17 @@ class Rover(MovementManager, ArmManager):
         readingY = int((hex(Y[0])[2:] + hex(Y[1])[2:]), 16)
         if readingY > 0x7FFF:
             readingY -= 0x10000
-        reading = math.atan2(readingY, readingX) * 180 / math.pi
+        self.imu.write_byte_data(0x0c, 0x0a, 0x00)
+        return readingX, readingY
+
+    def readAngle(self):
+        X, Y = self.readMags
+        reading = math.atan2(Y, X) * 180 / math.pi
+        if reading < 0:
+            reading += 360
         print('The results for X were: {} in high byte, {} for low byte, total measurement is {}'.format(X[0], X[1], readingX))
         print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
         print('Angle is {}'.format(reading))
-        self.imu.write_byte_data(0x0c, 0x0a, 0x00)
 
 
 class Map(object):
