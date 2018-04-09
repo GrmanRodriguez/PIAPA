@@ -113,6 +113,47 @@ class Rover(MovementManager, ArmManager):
         print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
         print('Angle is {}'.format(reading))
 
+    def readSonic(self):
+    	GPIO.output(self.FTHC, False)
+    	GPIO.output(self.LTHC, False)
+    	GPIO.output(self.RTHC, False)
+    	time.sleep(2*10**-6)
+    	GPIO.output(self.FTHC, True)
+    	GPIO.output(self.LTHC, True)
+    	GPIO.output(self.RTHC, True)
+    	time.sleep(10*10**-6)
+    	GPIO.output(self.FTHC, False)
+    	GPIO.output(self.LTHC, False)
+    	GPIO.output(self.RTHC, False)
+    	while GPIO.input(self.FEHC) == 0:
+    		startF = time.time()
+    	while GPIO.input(self.FEHC) == 1:
+    		endF = time.time()
+
+    	while GPIO.input(self.REHC) == 0:
+    		startR = time.time()
+    	while GPIO.input(self.REHC) == 1:
+    		endR = time.time()
+
+    	while GPIO.input(self.LEHC) == 0:
+    		startL = time.time()
+    	while GPIO.input(self.LEHC) == 1:
+    		endL = time.time() 
+
+    	duracionF = endF-startF
+    	duracionF = duracionF*10**6
+    	medidaF = duracionF/58
+
+    	duracionR = endR-startR
+    	duracionR = duracionR*10**6
+    	medidaR = duracionR/58
+
+    	duracionL = endL-startL
+    	duracionL = duracionL*10**6
+    	medidaL = duracionL/58
+
+    	return medidaF, medidaR, medidaL
+
 
 class Map(object):
     def __init__(self):
