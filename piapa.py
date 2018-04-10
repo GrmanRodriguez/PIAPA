@@ -213,7 +213,7 @@ class Map(object):
                 self.cur.execute(self.basic_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes))
             else:
                 self.cur.execute(self.no_start_no_target.format(self.stepSize,self.nodeAmount,self.disabledNodes))
-        db.commit()
+        self.db.commit()
 
     def locateInAM(self, Y, X):
         return (self.nodeAmount * Y) + X
