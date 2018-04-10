@@ -9,9 +9,7 @@ import math  # math library for operations
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 import MySQLdb  # library needed for communication with UI through MySQL database
-import json  # this library will allow us to send dictionaries through Wi-Fi as strings, amongst other things
 from smbus import SMBus
-import struct
 from util import MovementManager, ArmManager
 # --------------------------------------------------
 # Classes
