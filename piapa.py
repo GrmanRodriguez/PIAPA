@@ -8,7 +8,7 @@ import numpy as np  # numpy will handle arrays
 import math  # math library for operations
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
-import socket  # library needed for communication with UI through Wi-Fi
+import MySQLdb  # library needed for communication with UI through MySQL database
 import json  # this library will allow us to send dictionaries through Wi-Fi as strings, amongst other things
 from smbus import SMBus
 import struct
@@ -117,17 +117,17 @@ class Rover(MovementManager, ArmManager):
         #GPIO.output(self.FTHC, False)
         #GPIO.output(self.LTHC, False)
         GPIO.output(self.RTHC, False)
-        time.sleep(2*10**-6)
+        time.sleep(2 * 10**-6)
         #GPIO.output(self.FTHC, True)
         #GPIO.output(self.LTHC, True)
         GPIO.output(self.RTHC, True)
-        time.sleep(10*10**-6)
+        time.sleep(10 * 10**-6)
         #GPIO.output(self.FTHC, False)
         #GPIO.output(self.LTHC, False)
         GPIO.output(self.RTHC, False)
-        #while GPIO.input(self.FEHC) == 0:
+        # while GPIO.input(self.FEHC) == 0:
         #   startF = time.time()
-        #while GPIO.input(self.FEHC) == 1:
+        # while GPIO.input(self.FEHC) == 1:
         #   endF = time.time()
 
         while GPIO.input(self.REHC) == 0:
@@ -135,24 +135,24 @@ class Rover(MovementManager, ArmManager):
         while GPIO.input(self.REHC) == 1:
             endR = time.time()
 
-        #while GPIO.input(self.LEHC) == 0:
+        # while GPIO.input(self.LEHC) == 0:
         #   startL = time.time()
-        #while GPIO.input(self.LEHC) == 1:
-        #   endL = time.time() 
+        # while GPIO.input(self.LEHC) == 1:
+        #   endL = time.time()
 
         #duracionF = endF-startF
         #duracionF = duracionF*10**6
         #medidaF = duracionF/58
 
-        duracionR = endR-startR
-        duracionR = duracionR*10**6
-        medidaR = duracionR/58
+        duracionR = endR - startR
+        duracionR = duracionR * 10**6
+        medidaR = duracionR / 58
 
         #duracionL = endL-startL
         #duracionL = duracionL*10**6
         #medidaL = duracionL/58
         return medidaR
-        #return medidaF, medidaR, medidaL
+        # return medidaF, medidaR, medidaL
 
 
 class Map(object):
@@ -165,10 +165,16 @@ class Map(object):
         self._target = None
         self.adjMatrixCreate()
         self.disabledNodes = []
-        # the herald attribute will be the socket in charge of communicating with the main PC
-        # It will use port 53626 for this function
-        self.herald.listen(0)
-        self.conn, self.address = self.herald.accept()
+        self.basic_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
+        self.route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
+        self.pos_route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`, `positionY`, `positionX`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
+    if 'type' in kwargs:
+        # the db and cur attributes will be the socket in charge of communicating with the main DB
+        self.db = MySQLdb.connect(host="localhost",
+                                  user="root",
+                                  password="1234",
+                                  db="piapa_db")
+        self.cur = self.db.cursor()
         self.sendData()
 
     @property
@@ -197,21 +203,14 @@ class Map(object):
     def start(self):
         del self._start
 
-    def sendData(self, pos=None, **kwargs):
-        data = {'nodeAmount': self.nodeAmount,
-                'stepSize': self.stepSize,
-                'start': self.start,
-                'target': self.target,
-                'disabledNodes': self.disabledNodes}
-        if 'type' in kwargs:
-            if kwargs['type'] == 'route':
-                data["route"] = self.route
-            elif kwargs['type'] == 'pos':
-                data['position'] = pos
-            elif kwargs['type'] == 'pos_route':
-                data["route"] = self.route
-                data['position'] = pos
-        self.conn.sendall(json.dumps(data).encode('utf-8'))
+    def sendData(self, pos=None, **kwargs):   
+        if kwargs['type'] == 'route':
+            cur.execute(self.route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route))
+        elif kwargs['type'] == 'pos_route':
+            cur.execute(self.pos_route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route,pos[0],pos[1]))
+        else:
+            cur.execute(self.basic_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes))
+        db.commit()
 
     def locateInAM(self, Y, X):
         return (self.nodeAmount * Y) + X
