@@ -168,7 +168,7 @@ class Map(object):
         self.route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         self.pos_route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`, `positionY`, `positionX`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         # the db and cur attributes will be the socket in charge of communicating with the main DB
-        self.db = MySQLdb.connect(host="localhost",
+        self.db = MySQLdb.connect(host="192.168.1.116",
                                   user="root",
                                   password="1234",
                                   db="piapa_db")
@@ -201,11 +201,12 @@ class Map(object):
     def start(self):
         del self._start
 
-    def sendData(self, pos=None, **kwargs):   
-        if kwargs['type'] == 'route':
-            cur.execute(self.route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route))
-        elif kwargs['type'] == 'pos_route':
-            cur.execute(self.pos_route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route,pos[0],pos[1]))
+    def sendData(self, pos=None, **kwargs):
+        if 'type' in kwargs:   
+            if kwargs['type'] == 'route':
+                cur.execute(self.route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route))
+            elif kwargs['type'] == 'pos_route':
+                cur.execute(self.pos_route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route,pos[0],pos[1]))
         else:
             cur.execute(self.basic_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes))
         db.commit()
