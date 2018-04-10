@@ -334,7 +334,7 @@ class Map(object):
             if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
         self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
-        self.sendData({'type': 'route'})
+        self.sendData(type='route')
         return self.route
 
 # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
