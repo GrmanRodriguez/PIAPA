@@ -164,6 +164,7 @@ class Map(object):
         self._target = None
         self.adjMatrixCreate()
         self.disabledNodes = []
+        self.no_start_no_target = """self.basic_send = """INSERT INTO `piapa_db`.`status` (`stepSize`, `nodeAmount`, `disabledNodes`) VALUES ('{}', '{}', '{}');""""""
         self.basic_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         self.route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         self.pos_route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`, `positionY`, `positionX`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
@@ -208,7 +209,10 @@ class Map(object):
             elif kwargs['type'] == 'pos_route':
                 self.cur.execute(self.pos_route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route,pos[0],pos[1]))
         else:
-            self.cur.execute(self.basic_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes))
+            if (self.start is not None) and (self.target is not None): 
+                self.cur.execute(self.basic_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes))
+            else:
+                self.cur.execute(self.no_start_no_target.format(self.stepSize,self.nodeAmount,self.disabledNodes))
         db.commit()
 
     def locateInAM(self, Y, X):
