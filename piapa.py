@@ -204,11 +204,11 @@ class Map(object):
     def sendData(self, pos=None, **kwargs):
         if 'type' in kwargs:   
             if kwargs['type'] == 'route':
-                cur.execute(self.route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route))
+                self.cur.execute(self.route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route))
             elif kwargs['type'] == 'pos_route':
-                cur.execute(self.pos_route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route,pos[0],pos[1]))
+                self.cur.execute(self.pos_route_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes,self.route,pos[0],pos[1]))
         else:
-            cur.execute(self.basic_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes))
+            self.cur.execute(self.basic_send.format(self.start[0],self.start[1],self.target[0],self.target[1],self.stepSize,self.nodeAmount,self.disabledNodes))
         db.commit()
 
     def locateInAM(self, Y, X):
