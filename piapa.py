@@ -168,7 +168,7 @@ class Map(object):
         self.route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         self.pos_route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`, `positionY`, `positionX`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         # the db and cur attributes will be the socket in charge of communicating with the main DB
-        self.db = MySQLdb.connect(host="192.168.1.116:3306",
+        self.db = MySQLdb.connect(host="192.168.1.116",
                                   user="root",
                                   password="1234",
                                   db="piapa_db")
