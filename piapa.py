@@ -114,45 +114,45 @@ class Rover(MovementManager, ArmManager):
         print('Angle is {}'.format(reading))
 
     def readSonic(self):
-    	#GPIO.output(self.FTHC, False)
-    	#GPIO.output(self.LTHC, False)
-    	GPIO.output(self.RTHC, False)
-    	time.sleep(2*10**-6)
-    	#GPIO.output(self.FTHC, True)
-    	#GPIO.output(self.LTHC, True)
-    	GPIO.output(self.RTHC, True)
-    	time.sleep(10*10**-6)
-    	#GPIO.output(self.FTHC, False)
-    	#GPIO.output(self.LTHC, False)
-    	GPIO.output(self.RTHC, False)
-    	#while GPIO.input(self.FEHC) == 0:
-    	#	startF = time.time()
-    	#while GPIO.input(self.FEHC) == 1:
-    	#	endF = time.time()
+        #GPIO.output(self.FTHC, False)
+        #GPIO.output(self.LTHC, False)
+        GPIO.output(self.RTHC, False)
+        time.sleep(2 * 10**-6)
+        #GPIO.output(self.FTHC, True)
+        #GPIO.output(self.LTHC, True)
+        GPIO.output(self.RTHC, True)
+        time.sleep(10 * 10**-6)
+        #GPIO.output(self.FTHC, False)
+        #GPIO.output(self.LTHC, False)
+        GPIO.output(self.RTHC, False)
+        # while GPIO.input(self.FEHC) == 0:
+        #   startF = time.time()
+        # while GPIO.input(self.FEHC) == 1:
+        #   endF = time.time()
 
-    	while GPIO.input(self.REHC) == 0:
-    		startR = time.time()
-    	while GPIO.input(self.REHC) == 1:
-    		endR = time.time()
+        while GPIO.input(self.REHC) == 0:
+            startR = time.time()
+        while GPIO.input(self.REHC) == 1:
+            endR = time.time()
 
-    	#while GPIO.input(self.LEHC) == 0:
-    	#	startL = time.time()
-    	#while GPIO.input(self.LEHC) == 1:
-    	#	endL = time.time() 
+        # while GPIO.input(self.LEHC) == 0:
+        #   startL = time.time()
+        # while GPIO.input(self.LEHC) == 1:
+        #   endL = time.time()
 
-    	#duracionF = endF-startF
-    	#duracionF = duracionF*10**6
-    	#medidaF = duracionF/58
+        #duracionF = endF-startF
+        #duracionF = duracionF*10**6
+        #medidaF = duracionF/58
 
-    	duracionR = endR-startR
-    	duracionR = duracionR*10**6
-    	medidaR = duracionR/58
+        duracionR = endR - startR
+        duracionR = duracionR * 10**6
+        medidaR = duracionR / 58
 
-    	#duracionL = endL-startL
-    	#duracionL = duracionL*10**6
-    	#medidaL = duracionL/58
-    	return medidaR
-    	#return medidaF, medidaR, medidaL
+        #duracionL = endL-startL
+        #duracionL = duracionL*10**6
+        #medidaL = duracionL/58
+        return medidaR
+        # return medidaF, medidaR, medidaL
 
 
 class Map(object):
@@ -167,10 +167,8 @@ class Map(object):
         self.disabledNodes = []
         # the herald attribute will be the socket in charge of communicating with the main PC
         # It will use port 53626 for this function
-        self.herald = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.herald = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.herald.bind(('', 53626))
-        self.herald.listen(0)
-        self.conn, self.address = self.herald.accept()
         self.sendData()
 
     @property
