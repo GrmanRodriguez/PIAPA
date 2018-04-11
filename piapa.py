@@ -10,6 +10,7 @@ import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 import MySQLdb  # library needed for communication with UI through MySQL database
 from smbus import SMBus
+import threading
 from util import MovementManager, ArmManager
 # --------------------------------------------------
 # Classes
@@ -112,42 +113,43 @@ class Rover(MovementManager, ArmManager):
         print('Angle is {}'.format(reading))
 
     def readSonic(self):
-    	try:
-	        #GPIO.output(self.FTHC, False)
-	        #GPIO.output(self.LTHC, False)
-	        GPIO.output(self.RTHC, False)
-	        time.sleep(2*10**-6)
-		    #GPIO.output(self.FTHC, True)
-		    #GPIO.output(self.LTHC, True)
-		    GPIO.output(self.RTHC, True)
-		    time.sleep(0.00001)
-		    #GPIO.output(self.FTHC, False)
-		    #GPIO.output(self.LTHC, False)
-		    GPIO.output(self.RTHC, False)
-		    startR = time.time()
-		    # while GPIO.input(self.FEHC) == 0:
-		    #   startF = time.time()
-		    # while GPIO.input(self.FEHC) == 1:
-		    #   endF = time.time()
-		    while GPIO.input(self.REHC) == 0:
-		        startR = time.time()
-		    while GPIO.input(self.REHC) == 1:
-		        endR = time.time()
-	        # while GPIO.input(self.LEHC) == 0:
-	        #   startL = time.time()
-	        # while GPIO.input(self.LEHC) == 1:
-	        #   endL = time.time()
-	        #duracionF = endF-startF
-	        #duracionF = duracionF*10**6
-	        #medidaF = duracionF/58
-	        elapsedR = endR - startR
-	        distanceR = (elapsedR * 34300)/2
-	        #duracionL = endL-startL
-	        #duracionL = duracionL*10**6
-	        #medidaL = duracionL/58
-	        return medidaR
-	        # return medidaF, medidaR, medidaL
-
+        try:
+            # GPIO.output(self.FTHC, False)
+            # GPIO.output(self.LTHC, False)
+            GPIO.output(self.RTHC, False)
+            time.sleep(2 * 10**-6)
+            # GPIO.output(self.FTHC, True)
+            # GPIO.output(self.LTHC, True)
+            GPIO.output(self.RTHC, True)
+            time.sleep(0.00001)
+            # GPIO.output(self.FTHC, False)
+            # GPIO.output(self.LTHC, False)
+            GPIO.output(self.RTHC, False)
+            startR = time.time()
+            # while GPIO.input(self.FEHC) == 0:
+            #   startF = time.time()
+            # while GPIO.input(self.FEHC) == 1:
+            #   endF = time.time()
+            while GPIO.input(self.REHC) == 0:
+                startR = time.time()
+            while GPIO.input(self.REHC) == 1:
+                endR = time.time()
+            # while GPIO.input(self.LEHC) == 0:
+            #   startL = time.time()
+            # while GPIO.input(self.LEHC) == 1:
+            #   endL = time.time()
+            # duracionF = endF-startF
+            # duracionF = duracionF*10**6
+            # medidaF = duracionF/58
+            elapsedR = endR - startR
+            distanceR = (elapsedR * 34300)/2
+            # duracionL = endL-startL
+            # duracionL = duracionL*10**6
+            # medidaL = duracionL/58
+            return medidaR
+            # return medidaF, medidaR, medidaL
+        except Exception as e:
+            pass
 
 class Map(object):
     def __init__(self):
@@ -169,6 +171,10 @@ class Map(object):
                                   password="1234",
                                   db="piapa_db")
         self.cur = self.db.cursor()
+        self.cur.execute("""SELECT * FROM orders ORDER BY id DESC LIMIT 1""")
+        data = self.cur.fetchone()
+        self.lastOrder = data[0]
+        self.checkForOrders()
         self.sendData()
 
     @property
@@ -196,6 +202,21 @@ class Map(object):
     @start.deleter
     def start(self):
         del self._start
+
+    def checkForOrders(self):
+        self.cur.execute("""SELECT * FROM orders ORDER BY id DESC LIMIT 1""")
+        data = self.cur.fetchone()
+        if data[0] > self.lastOrder:
+            if data[1] == 'disable':
+                if [data[2], data[3]] not in self.disabledNodes:
+                    self.disableNode(data[2],data[3])
+            elif data[1] == 'enable':
+                if [data[2], data[3]] in self.disabledNodes:
+                    self.enableNode(data[2],data[3])
+            elif data[1] == 'target':
+                self.target = [data[2], data[3]]
+        threading.Timer(0.4, self.checkForOrders).start()
+
 
     def sendData(self, pos=None, **kwargs):
         if 'type' in kwargs:   
