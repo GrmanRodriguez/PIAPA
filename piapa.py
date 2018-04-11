@@ -112,45 +112,41 @@ class Rover(MovementManager, ArmManager):
         print('Angle is {}'.format(reading))
 
     def readSonic(self):
-        #GPIO.output(self.FTHC, False)
-        #GPIO.output(self.LTHC, False)
-        GPIO.output(self.RTHC, False)
-        time.sleep(2*10**-6)
-	    #GPIO.output(self.FTHC, True)
-	    #GPIO.output(self.LTHC, True)
-	    GPIO.output(self.RTHC, True)
-	    time.sleep(0.00001)
-	    #GPIO.output(self.FTHC, False)
-	    #GPIO.output(self.LTHC, False)
-	    GPIO.output(self.RTHC, False)
-	    startR = time.time()
-	    # while GPIO.input(self.FEHC) == 0:
-	    #   startF = time.time()
-	    # while GPIO.input(self.FEHC) == 1:
-	    #   endF = time.time()
-
-	    while GPIO.input(self.REHC) == 0:
-	        startR = time.time()
-	    while GPIO.input(self.REHC) == 1:
-	        endR = time.time()
-
-        # while GPIO.input(self.LEHC) == 0:
-        #   startL = time.time()
-        # while GPIO.input(self.LEHC) == 1:
-        #   endL = time.time()
-
-        #duracionF = endF-startF
-        #duracionF = duracionF*10**6
-        #medidaF = duracionF/58
-
-        elapsedR = endR - startR
-        distanceR = (elapsedR * 34300)/2
-
-        #duracionL = endL-startL
-        #duracionL = duracionL*10**6
-        #medidaL = duracionL/58
-        return medidaR
-        # return medidaF, medidaR, medidaL
+    	try:
+	        #GPIO.output(self.FTHC, False)
+	        #GPIO.output(self.LTHC, False)
+	        GPIO.output(self.RTHC, False)
+	        time.sleep(2*10**-6)
+		    #GPIO.output(self.FTHC, True)
+		    #GPIO.output(self.LTHC, True)
+		    GPIO.output(self.RTHC, True)
+		    time.sleep(0.00001)
+		    #GPIO.output(self.FTHC, False)
+		    #GPIO.output(self.LTHC, False)
+		    GPIO.output(self.RTHC, False)
+		    startR = time.time()
+		    # while GPIO.input(self.FEHC) == 0:
+		    #   startF = time.time()
+		    # while GPIO.input(self.FEHC) == 1:
+		    #   endF = time.time()
+		    while GPIO.input(self.REHC) == 0:
+		        startR = time.time()
+		    while GPIO.input(self.REHC) == 1:
+		        endR = time.time()
+	        # while GPIO.input(self.LEHC) == 0:
+	        #   startL = time.time()
+	        # while GPIO.input(self.LEHC) == 1:
+	        #   endL = time.time()
+	        #duracionF = endF-startF
+	        #duracionF = duracionF*10**6
+	        #medidaF = duracionF/58
+	        elapsedR = endR - startR
+	        distanceR = (elapsedR * 34300)/2
+	        #duracionL = endL-startL
+	        #duracionL = duracionL*10**6
+	        #medidaL = duracionL/58
+	        return medidaR
+	        # return medidaF, medidaR, medidaL
 
 
 class Map(object):
