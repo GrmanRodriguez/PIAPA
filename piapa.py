@@ -173,7 +173,7 @@ class Map(object):
         self.cur = self.db.cursor()
         self.cur.execute("""SELECT * FROM orders ORDER BY id DESC LIMIT 1""")
         data = self.cur.fetchone()
-        self.lastOrder = data[0]
+        self.lastOrder = int(data[0])
         self.checkForOrders()
         self.sendData()
 
@@ -206,15 +206,15 @@ class Map(object):
     def checkForOrders(self):
         self.cur.execute("""SELECT * FROM orders ORDER BY id DESC LIMIT 1""")
         data = self.cur.fetchone()
-        if data[0] > self.lastOrder:
+        if int(data[0]) > self.lastOrder:
             if data[1] == 'disable':
-                if [data[2], data[3]] not in self.disabledNodes:
-                    self.disableNode(data[2],data[3])
+                if [int(data[2]), int(data[3])] not in self.disabledNodes:
+                    self.disableNode(int(data[2]),int(data[3]))
             elif data[1] == 'enable':
                 if [data[2], data[3]] in self.disabledNodes:
-                    self.enableNode(data[2],data[3])
+                    self.enableNode(int(data[2]),int(data[3]))
             elif data[1] == 'target':
-                self.target = [data[2], data[3]]
+                self.target = [int(data[2]), int(data[3])]
         threading.Timer(0.4, self.checkForOrders).start()
 
 
