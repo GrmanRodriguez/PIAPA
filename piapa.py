@@ -115,7 +115,6 @@ class Rover(MovementManager, ArmManager):
         #GPIO.output(self.FTHC, False)
         #GPIO.output(self.LTHC, False)
         GPIO.output(self.RTHC, False)
-        while true:
 	        #GPIO.output(self.FTHC, True)
 	        #GPIO.output(self.LTHC, True)
 	        GPIO.output(self.RTHC, True)
