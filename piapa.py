@@ -215,8 +215,7 @@ class Map(object):
                     self.enableNode(int(data[2]),int(data[3]))
             elif data[1] == 'target':
                 self.target = [int(data[2]), int(data[3])]
-            self.lastOrder = int(data[0])            
-        threading.Timer(0.4, self.checkForOrders).start()
+            self.lastOrder = int(data[0])
 
 
     def sendData(self, pos=None, **kwargs):
@@ -391,6 +390,10 @@ def executeTasks(tasks):
         except StopIteration:
             break
 
+
+def mapUpdate():
+    m.checkForOrders()
+    threading.Time(0.4, mapUpdate).start()
 
 def test():
     r.position = [0, 0]
