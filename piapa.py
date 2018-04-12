@@ -112,23 +112,23 @@ class Rover(MovementManager, ArmManager):
         print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
         print('Angle is {}'.format(reading))
 
-    def readSonic(self):
-    	while True:
-	        GPIO.output(self.FTHC, True)
-	        time.sleep(0.00001)
-	        GPIO.output(self.FTHC, False)
-	        start = time.time()
-	        while GPIO.input(self.FEHC) == 0:
-	            start = time.time()
-	        while GPIO.input(self.FEHC) == 1:
-	            end = time.time()
-	        duration = end-start
-	        distance = (duration * 34300) / 2
-	        return distance
-	        time.sleep(1)
-	    except KeyboardInterrupt:
-	    	print('quit')
-	    	GPIO.cleanup()
+	def readSonic(self):
+		while True:
+			GPIO.output(self.FTHC, True)
+			time.sleep(0.00001)
+			GPIO.output(self.FTHC, False)
+			start = time.time()
+			while GPIO.input(self.FEHC) == 0:
+	    		start = time.time()
+			while GPIO.input(self.FEHC) == 1:
+	    		end = time.time()
+			duration = end-start
+			distance = (duration * 34300) / 2
+			return distance
+			time.sleep(1)
+		except KeyboardInterrupt:
+			print('quit')
+			GPIO.cleanup()
 
 
 class Map(object):
