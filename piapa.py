@@ -126,7 +126,7 @@ class Rover(MovementManager, ArmManager):
                     end = time.time()
                 duration = end-start
                 distance = (duration * 34300) / 2
-                print distance
+                print(str(distance))
                 time.sleep(1)
         except KeyboardInterrupt:
             print('quit')
