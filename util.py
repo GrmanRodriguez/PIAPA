@@ -42,10 +42,13 @@ class MovementManager():
         GPIO.setup(self.FRF, GPIO.OUT)
         GPIO.setup(self.FRB, GPIO.OUT)
         GPIO.setup(self.FTHC, GPIO.OUT)
+        GPIO.output(self.FTHC, False)
         GPIO.setup(self.FEHC, GPIO.IN)
         GPIO.setup(self.RTHC, GPIO.OUT)
+        GPIO.output(self.RTHC, False)
         GPIO.setup(self.REHC, GPIO.IN)
         GPIO.setup(self.LTHC, GPIO.OUT)
+        GPIO.output(self.LTHC, False)
         GPIO.setup(self.LEHC, GPIO.IN)
 
     # Function to move forward
