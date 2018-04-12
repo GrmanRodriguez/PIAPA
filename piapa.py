@@ -114,42 +114,20 @@ class Rover(MovementManager, ArmManager):
 
     def readSonic(self):
         try:
-            # GPIO.output(self.FTHC, False)
-            # GPIO.output(self.LTHC, False)
-            GPIO.output(self.RTHC, False)
-            time.sleep(2 * 10**-6)
-            # GPIO.output(self.FTHC, True)
-            # GPIO.output(self.LTHC, True)
-            GPIO.output(self.RTHC, True)
-            time.sleep(0.00001)
-            # GPIO.output(self.FTHC, False)
-            # GPIO.output(self.LTHC, False)
-            GPIO.output(self.RTHC, False)
-            startR = time.time()
-            # while GPIO.input(self.FEHC) == 0:
-            #   startF = time.time()
-            # while GPIO.input(self.FEHC) == 1:
-            #   endF = time.time()
-            while GPIO.input(self.REHC) == 0:
-                startR = time.time()
-            while GPIO.input(self.REHC) == 1:
-                endR = time.time()
-            # while GPIO.input(self.LEHC) == 0:
-            #   startL = time.time()
-            # while GPIO.input(self.LEHC) == 1:
-            #   endL = time.time()
-            # duracionF = endF-startF
-            # duracionF = duracionF*10**6
-            # medidaF = duracionF/58
-            elapsedR = endR - startR
-            distanceR = (elapsedR * 34300)/2
-            # duracionL = endL-startL
-            # duracionL = duracionL*10**6
-            # medidaL = duracionL/58
-            return medidaR
-            # return medidaF, medidaR, medidaL
+            GPIO.output(FTHC, False)
+            time.sleep(2E-6)
+            GPIO.output(FTHC, True)
+            time.sleep(10E-6)
+            GPIO.output(FTHC, False)
+            while GPIO.Input(FEHC) == 0:
+                start = time.time()
+            while GPIO.Input(FEHC) == 1:
+                end = time.time()
+            duration = start-end
+            distance = duration * (10 ** -6) / 58
+            return distance
         except Exception as e:
-            pass
+            return
 
 class Map(object):
     def __init__(self):
