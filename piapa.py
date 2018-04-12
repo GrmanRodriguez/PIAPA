@@ -113,6 +113,8 @@ class Rover(MovementManager, ArmManager):
         print('Angle is {}'.format(reading))
 
     def readSonic(self):
+    	GPIO.output(self.FTHC, False)
+    	time.sleep(2E-6)
         GPIO.output(self.FTHC, True)
         time.sleep(10E-6)
         GPIO.output(self.FTHC, False)
