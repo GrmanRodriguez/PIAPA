@@ -113,14 +113,14 @@ class Rover(MovementManager, ArmManager):
         print('Angle is {}'.format(reading))
 
     def readSonic(self):
-        GPIO.output(FTHC, False)
+        GPIO.output(self.FTHC, False)
         time.sleep(2E-6)
-        GPIO.output(FTHC, True)
+        GPIO.output(self.FTHC, True)
         time.sleep(10E-6)
-        GPIO.output(FTHC, False)
-        while GPIO.Input(FEHC) == 0:
+        GPIO.output(self.FTHC, False)
+        while GPIO.Input(self.FEHC) == 0:
             start = time.time()
-        while GPIO.Input(FEHC) == 1:
+        while GPIO.Input(self.FEHC) == 1:
             end = time.time()
         duration = start-end
         distance = duration * (10 ** -6) / 58
