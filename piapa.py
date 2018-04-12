@@ -187,6 +187,7 @@ class Map(object):
     def checkForOrders(self):
         self.cur.execute("""SELECT * FROM orders ORDER BY id DESC LIMIT 1""")
         data = self.cur.fetchone()
+        print(data)
         if int(data[0]) > self.lastOrder:
             if data[1] == 'disable':
                 if [int(data[2]), int(data[3])] not in self.disabledNodes:
