@@ -114,19 +114,19 @@ class Rover(MovementManager, ArmManager):
 
     def readSonic(self):
         try:
-            start = time.time()
-            end = time.time()
             while True:
                 GPIO.output(self.FTHC, True)
                 time.sleep(0.00001)
                 GPIO.output(self.FTHC, False)
+                startTime = time.time()
+                endTime = time.time()
                 while GPIO.input(self.FEHC) == 0:
-                    start = time.time()
+                    startTime = time.time()
                 while GPIO.input(self.FEHC) == 1:
-                    end = time.time()
-                duration = end-start
+                    endTime = time.time()
+                duration = endTime - startTime
                 distance = (duration * 34300) / 2
-                print(str(distance))
+                print('Distancia: {}'.format(distance))
                 time.sleep(1)
         except KeyboardInterrupt:
             print('quit')
