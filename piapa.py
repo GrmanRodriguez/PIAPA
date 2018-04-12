@@ -119,6 +119,7 @@ class Rover(MovementManager, ArmManager):
                 time.sleep(0.00001)
                 GPIO.output(self.FTHC, False)
                 start = time.time()
+                end = time.time()
                 while GPIO.input(self.FEHC) == 0:
                     start = time.time()
                 while GPIO.input(self.FEHC) == 1:
