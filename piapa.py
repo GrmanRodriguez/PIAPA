@@ -130,7 +130,6 @@ class Rover(MovementManager, ArmManager):
                 time.sleep(1)
         except KeyboardInterrupt:
             print('quit')
-            GPIO.cleanup()
 
 
 class Map(object):
