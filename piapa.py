@@ -120,9 +120,9 @@ class Rover(MovementManager, ArmManager):
                 GPIO.output(self.FTHC, False)
                 startTime = time.time()
                 endTime = time.time()
-                while GPIO.input(self.FEHC) == 0:
+                if GPIO.input(self.FEHC) == 0:
                     startTime = time.time()
-                while GPIO.input(self.FEHC) == 1:
+                if GPIO.input(self.FEHC) == 1:
                     endTime = time.time()
                 duration = endTime - startTime
                 distance = (duration * 34300) / 2
