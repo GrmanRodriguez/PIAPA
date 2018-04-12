@@ -130,6 +130,7 @@ class Rover(MovementManager, ArmManager):
 	    	print('quit')
 	    	GPIO.cleanup()
 
+
 class Map(object):
     def __init__(self):
         # The map is divided in a 7x7 cells arranged in matrix format from [0,0] to [6,6]
