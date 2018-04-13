@@ -353,7 +353,7 @@ class Map(object):
 # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
 
 
-def createTasks(points, r, m):
+def createTasks(points):
     for element in points[:-1]:
         r.goToPoint(element[0], element[1])
         m.sendData(type='pos_route', pos=r.position)
@@ -423,9 +423,12 @@ if __name__ == '__main__':
     while not m.checkForStart():
         m.checkForOrders()
     while 1:
-        m.checkForOrders()
-        createTasks()
-        m.target = m.start
-        m.start = r.position
+        try:
+            m.checkForOrders()
+            createTasks(m.dijkstra())
+            m.target = m.start
+            m.start = r.position
+        except KeyboardInterrupt:
+            break
     r.quit()
     r.close()
