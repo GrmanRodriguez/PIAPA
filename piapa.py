@@ -31,9 +31,9 @@ class Rover(MovementManager, ArmManager):
     def __init__(self):
         MovementManager.__init__(self)
         ArmManager.__init__(self)
-        self.imu = SMBus(1)
-        self.imu.write_byte_data(0x68, 0x6b, 0x00)
-        self.imu.write_byte_data(0x68, 0x37, 0x22)
+        #self.imu = SMBus(1)
+        #self.imu.write_byte_data(0x68, 0x6b, 0x00)
+        #self.imu.write_byte_data(0x68, 0x37, 0x22)
         self.no()
         self.armOff()
 
