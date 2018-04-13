@@ -409,7 +409,7 @@ if __name__ == '__main__':
     r = Rover()
     r.position = [0,0]
     m = Map()
-    m.start = [0,0]
+    m.start = [0,1]
     m.target = [6,6]
     m.disableNode(0, 1)
     m.disableNode(1, 1)
