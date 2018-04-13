@@ -391,7 +391,10 @@ def test():
 
 if __name__ == '__main__':
     r = Rover()
+    r.position = [0,0]
     m = Map()
+    m.start = [0,0]
+    m.target = [6,6]
     m.disableNode(0, 1)
     m.disableNode(1, 1)
     m.disableNode(3, 0)
@@ -401,7 +404,10 @@ if __name__ == '__main__':
     m.disableNode(3, 3)
     m.disableNode(2, 3)
     m.disableNode(2, 4)
-    test()
+    while 1:
+        m.checkForOrders()
+        createTasks()
+        m.target = m.start
+        m.start = r.position
     r.quit()
     r.close()
-    m.herald.close()
