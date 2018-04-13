@@ -146,6 +146,7 @@ class Map(object):
         self.basic_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         self.route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
         self.pos_route_send = """INSERT INTO `piapa_db`.`status` (`startY`, `startX`, `targetY`, `targetX`, `stepSize`, `nodeAmount`, `disabledNodes`, `route`, `positionY`, `positionX`) VALUES ('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');"""
+        self.go_check = """SELECT * FROM begin ORDER BY id DESC LIMIT 1"""
         # the db and cur attributes will be the socket in charge of communicating with the main DB
         self.db = MySQLdb.connect(host="192.168.1.116",
                                   user="root",
@@ -154,7 +155,12 @@ class Map(object):
         self.cur = self.db.cursor()
         self.cur.execute("""SELECT * FROM orders ORDER BY id DESC LIMIT 1""")
         data = self.cur.fetchone()
+        self.db.commit()
         self.lastOrder = int(data[0])
+        self.cur.execute(self.go_check)
+        comm = self.cur.fetchone()
+        self.beginOrd = int(comm[0])
+        self.db.commit()
         self.checkForOrders()
         self.sendData()
 
@@ -183,6 +189,16 @@ class Map(object):
     @start.deleter
     def start(self):
         del self._start
+
+    def checkForStart(self):
+        self.cur.execute(self.go_check)
+        self.db.commit()
+        comm = self.cur.fetchone()
+        if int(comm[0]) > self.beginOrd:
+            self.beginOrd = int(comm[0])
+            return True
+        else:
+            return False
 
     def checkForOrders(self):
         self.cur.execute("""SELECT * FROM orders ORDER BY id DESC LIMIT 1""")
@@ -404,6 +420,8 @@ if __name__ == '__main__':
     m.disableNode(3, 3)
     m.disableNode(2, 3)
     m.disableNode(2, 4)
+    while not m.checkForStart():
+        m.checkForOrders()
     while 1:
         m.checkForOrders()
         createTasks()
