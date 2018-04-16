@@ -23,12 +23,12 @@ class MovementManager():
     turnClockw = 1.92  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
     turnCounterClockw = 2.1  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
     Straight = 0.9  # Time needed by the robot to advance 1 meter (TUNED)
-    FTHC = 36 #The front HC-SR04 Trigger is connected to GPIO pin 36
-    FEHC = 37 #The front HC-SR04 Echo is connected to GPIO pin 37
-    RTHC = 40 #The right HC-SR04 Trigger is connected to GPIO pin 40 
-    REHC = 35 #The right HC-SR04 Echo is connected to GPIO pin 35
-    LTHC = 38 #The left HC-SR04 Trigger is connected to GPIO pin 38
-    LEHC = 33 #The left HC-SR04 Echo is connected to GPIO pin 33
+    FTHC = 36  # The front HC-SR04 Trigger is connected to GPIO pin 36
+    FEHC = 37  # The front HC-SR04 Echo is connected to GPIO pin 37
+    RTHC = 40  # The right HC-SR04 Trigger is connected to GPIO pin 40
+    REHC = 35  # The right HC-SR04 Echo is connected to GPIO pin 35
+    LTHC = 38  # The left HC-SR04 Trigger is connected to GPIO pin 38
+    LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
 
     def __init__(self):
         # Setup pins as outputs
@@ -42,13 +42,13 @@ class MovementManager():
         GPIO.setup(self.FRF, GPIO.OUT)
         GPIO.setup(self.FRB, GPIO.OUT)
         GPIO.setup(self.FTHC, GPIO.OUT)
-        GPIO.output(self.FTHC, False)
+        GPIO.output(self.FTHC, GPIO.LOW)
         GPIO.setup(self.FEHC, GPIO.IN)
         GPIO.setup(self.RTHC, GPIO.OUT)
-        GPIO.output(self.RTHC, False)
+        GPIO.output(self.RTHC, GPIO.LOW)
         GPIO.setup(self.REHC, GPIO.IN)
         GPIO.setup(self.LTHC, GPIO.OUT)
-        GPIO.output(self.LTHC, False)
+        GPIO.output(self.LTHC, GPIO.LOW)
         GPIO.setup(self.LEHC, GPIO.IN)
 
     # Function to move forward
