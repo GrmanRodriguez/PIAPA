@@ -124,17 +124,17 @@ class Rover(MovementManager, ArmManager):
             endTimeF = time.time()
             if GPIO.input(self.FEHC)==GPIO.LOW:
                 break
-        GPIO.output(self.RTHC, GPIO.HIGH)
-        time.sleep(0.00001)
-        GPIO.output(self.RTHC, GPIO.LOW)
-        while True:
-            startTime = time.time()
-            if GPIO.input(self.REHC)==GPIO.HIGH:
-                break
-        while True:
-            endTime = time.time()
-            if GPIO.input(self.REHC)==GPIO.LOW:
-                break
+        # GPIO.output(self.RTHC, GPIO.HIGH)
+        # time.sleep(0.00001)
+        # GPIO.output(self.RTHC, GPIO.LOW)
+        # while True:
+        #     startTime = time.time()
+        #     if GPIO.input(self.REHC)==GPIO.HIGH:
+        #         break
+        # while True:
+        #     endTime = time.time()
+        #     if GPIO.input(self.REHC)==GPIO.LOW:
+        #         break
         GPIO.output(self.LTHC, GPIO.HIGH)
         time.sleep(0.00001)
         GPIO.output(self.LTHC, GPIO.LOW)
@@ -148,12 +148,12 @@ class Rover(MovementManager, ArmManager):
                 break
         durationF=endTimeF-startTimeF
         distanceF=(durationF*34300)/2
-        durationR=endTime-startTime
-        distanceR=(durationR*34300)/2
+        # durationR=endTime-startTime
+        # distanceR=(durationR*34300)/2
         durationL=endTimeL-startTimeL
         distanceL=(durationL*34300)/2
         print('Distancia Frontal: {}'.format(distanceF))
-        print('Distancia Lateral Derecha: {}'.format(distanceR))
+        #print('Distancia Lateral Derecha: {}'.format(distanceR))
         print('Distancia Lateral Izquierda: {}'.format(distanceL))
 
 class Map(object):
