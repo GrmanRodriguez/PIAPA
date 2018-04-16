@@ -26,7 +26,7 @@ class MovementManager():
     FTHC = 36  # The front HC-SR04 Trigger is connected to GPIO pin 36
     FEHC = 37  # The front HC-SR04 Echo is connected to GPIO pin 37
     RTHC = 40  # The right HC-SR04 Trigger is connected to GPIO pin 40
-    REHC = 35  # The right HC-SR04 Echo is connected to GPIO pin 35
+    REHC = 31  # The right HC-SR04 Echo is connected to GPIO pin 35
     LTHC = 38  # The left HC-SR04 Trigger is connected to GPIO pin 38
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
 
