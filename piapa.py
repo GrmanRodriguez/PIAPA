@@ -213,6 +213,9 @@ class Map(object):
             elif data[1] == 'target':
                 self.target = [int(data[2]), int(data[3])]
             self.lastOrder = int(data[0])
+            return True
+        else:
+            return False
 
 
     def sendData(self, pos=None, **kwargs):
@@ -411,22 +414,23 @@ if __name__ == '__main__':
     m = Map()
     m.start = r.position
     m.target = [6,6]
-    m.disableNode(0, 1)
-    m.disableNode(1, 1)
-    m.disableNode(3, 0)
-    m.disableNode(3, 2)
-    m.disableNode(4, 2)
-    m.disableNode(5, 2)
-    m.disableNode(3, 3)
-    m.disableNode(2, 3)
-    m.disableNode(2, 4)
+    pickL = m.target
+    placeL = m.start
     while not m.checkForStart():
         m.checkForOrders()
     while 1:
         try:
-            m.checkForOrders()
+            isThereOrder = m.checkForOrders()
+            if isThereOrder:
+                if r.hasObject:
+                    placeL = m.target
+                else:
+                    pickL = m.target
             createTasks(m.dijkstra())
-            m.target = m.start
+            if r.hasObject:
+                m.target = placeL
+            else:
+                m.target = pickL
             m.start = r.position
         except KeyboardInterrupt:
             break
