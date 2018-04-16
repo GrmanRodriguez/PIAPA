@@ -115,16 +115,16 @@ class Rover(MovementManager, ArmManager):
     def readSonic(self):
         try:
             while True:
-                GPIO.output(self.LTHC, GPIO.HIGH)
+                GPIO.output(self.FTHC, GPIO.HIGH)
                 time.sleep(0.00001)
-                GPIO.output(self.LTHC, GPIO.LOW)
+                GPIO.output(self.FTHC, GPIO.LOW)
                 while True:
                     startTime = time.time()
-                    if GPIO.input(self.LEHC)==GPIO.HIGH:
+                    if GPIO.input(self.FEHC)==GPIO.HIGH:
                         break
                 while True:
                     endTime = time.time()
-                    if GPIO.input(self.LEHC)==GPIO.LOW:
+                    if GPIO.input(self.FEHC)==GPIO.LOW:
                         break
                 duration = endTime - startTime
                 distance = (duration * 34300) / 2
