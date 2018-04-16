@@ -113,26 +113,48 @@ class Rover(MovementManager, ArmManager):
         print('Angle is {}'.format(reading))
 
     def readSonic(self):
-        try:
-            while True:
-                GPIO.output(self.FTHC, GPIO.HIGH)
-                time.sleep(0.00001)
-                GPIO.output(self.FTHC, GPIO.LOW)
-                while True:
-                    startTime = time.time()
-                    if GPIO.input(self.FEHC)==GPIO.HIGH:
-                        break
-                while True:
-                    endTime = time.time()
-                    if GPIO.input(self.FEHC)==GPIO.LOW:
-                        break
-                duration = endTime - startTime
-                distance = (duration * 34300) / 2
-                print('Distancia: {}'.format(distance))
-                time.sleep(1)
-        except KeyboardInterrupt:
-            print('quit')
-
+        GPIO.output(self.FTHC, GPIO.HIGH)
+        time.sleep(0.00001)
+        GPIO.output(self.FTHC, GPIO.LOW)
+        while True:
+            startTimeF = time.time()
+            if GPIO.input(self.FEHC)==GPIO.HIGH:
+                break
+        while True:
+            endTimeF = time.time()
+            if GPIO.input(self.FEHC)==GPIO.LOW:
+                break
+        GPIO.output(self.RTHC, GPIO.HIGH)
+        time.sleep(0.00001)
+        GPIO.output(self.RTHC, GPIO.LOW)
+        while True:
+            startTimeR = time.time()
+            if GPIO.input(self.REHC)==GPIO.HIGH:
+                break
+        while True:
+            endTimeR = time.time()
+            if GPIO.input(self.REHC)==GPIO.LOW:
+                break
+        GPIO.output(self.LTHC, GPIO.HIGH)
+        time.sleep(0.00001)
+        GPIO.output(self.LTHC, GPIO.LOW)
+        while True:
+            startTimeL = time.time()
+            if GPIO.input(self.LEHC)==GPIO.HIGH:
+                break
+        while True:
+            endTimeL = time.time()
+            if GPIO.input(self.LEHC)==GPIO.LOW:
+                break
+        durationF=endTimeF-startTimeF
+        distanceF=(durationF*34300)/2
+        durationR=endTimeR-startTimeR
+        distanceR=(durationR*34300)/2
+        durationL=endTimeL-startTimeL
+        distanceL=(durationL*34300)/2
+        print('Distancia Frontal: {}'.format(distanceF))
+        print('Distancia Lateral derecha: {}'.format(distanceR))
+        print('Distancia Lateral izquierda: {}'.format(distanceL))
 
 class Map(object):
     def __init__(self):
