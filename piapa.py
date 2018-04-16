@@ -381,6 +381,16 @@ class Map(object):
 
 
 def createTasks(points):
+    angle = r.angle
+    reducedpoints = []
+    angle = math.atan2(-(points[1][0] - points[0][0]), points[1][1] - points[0][1]) * 180 / math.pi
+    for el,nextel in zip(points, points[1:-1]+[None]):
+        newangle = math.atan2(-(nextel[0] - el[0]), nextel[1] - el[1]) * 180 / math.pi
+        if newangle != angle:
+            reducedpoints.append(el)
+            angle = newangle
+    reducedpoints.append(points[:-1])
+    return points, reducedpoints
     for element in points[:-1]:
         r.goToPoint(element[0], element[1])
         m.sendData(type='pos_route', pos=r.position)
