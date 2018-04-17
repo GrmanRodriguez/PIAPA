@@ -152,9 +152,75 @@ class Rover(MovementManager, ArmManager):
         # distanceR=(durationR*34300)/2
         durationL=endTimeL-startTimeL
         distanceL=(durationL*34300)/2
-        print('Distancia Frontal: {}'.format(distanceF))
+        return distanceF
         #print('Distancia Lateral Derecha: {}'.format(distanceR))
-        print('Distancia Lateral Izquierda: {}'.format(distanceL))
+
+    def createTasks(self, points):
+        def Reduce(points):
+            angle=math.atan2(points[1][0]-points[0][0],points[1][1]-points[0][1])
+            reducedpoints=[points[0]]
+            for x in range(1,len(points)-1):
+                newangle=math.atan2(points[x+1][0]-points[x][0],points[x+1][1]-points[x][1])
+                if newangle != angle:
+                    reducedpoints.append(points[x])
+                else:
+                    if x == len(points)-2:
+                        reducedpoints.append(points[x])
+            reducedpoints.append(points[len(points)-1])
+            return reducedpoints
+        if len(points) > 4:
+            points = Reduce(points)
+        for element in points[:-1]:
+            self.goToPoint(element[0], element[1])
+            m.sendData(type='pos_route', pos=r.position)
+        self.turnToPoint(points[-1][0], points[-1][1])
+        if self.hasObject:
+            self.place()
+        else:
+            self.pick()
+
+    def createTasksComplete(self, points):
+        def Reduce(points):
+            angle=math.atan2(points[1][0]-points[0][0],points[1][1]-points[0][1])
+            reducedpoints=[points[0]]
+            for x in range(1,len(points)-1):
+                newangle=math.atan2(points[x+1][0]-points[x][0],points[x+1][1]-points[x][1])
+                if newangle != angle:
+                    reducedpoints.append(points[x])
+                else:
+                    if x == len(points)-2:
+                        reducedpoints.append(points[x])
+            reducedpoints.append(points[len(points)-1])
+            return reducedpoints
+        if len(points) > 4:
+            points = Reduce(points)
+        for element in points[:-1]:
+            self.turnToPoint(element[0], element[1])
+            distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
+            interval = distance/(element[0] - self.position[0])
+            begin = time.time()
+            beginterv = time.time()
+            self.RL(1); self.FL(1); self.FR(1); self.RR(1)
+            while ((time.time() - begin) < (distance * 1 / self.Straight)):
+                if ((time.time() - beginterv) > (interval * 1 / self.Straight)):
+                    if element[0] > self.position[0]:
+                        self.position = [self.position[0]+1, self.position[1]]
+                    if element[1] > self.position[1]:
+                        self.position = [self.position[0], self.position[1]+1]
+                    beginterv = time.time()
+                obstacle = self.readSonic()
+                if obstacle < 2:
+                    self.noMove()
+                    self.createTasksComplete(m.dijkstra(interim_pos=self.position))
+                    return
+            self.noMove()
+            self.position = element
+            m.sendData(type='pos_route', pos=self.position)
+        self.turnToPoint(points[-1][0], points[-1][1])
+        if self.hasObject:
+            self.place()
+        else:
+            self.pick()
 
 class Map(object):
     def __init__(self):
@@ -323,7 +389,11 @@ class Map(object):
                 pass
         self.sendData()
 
-    def dijkstra(self):
+    def dijkstra(self, interim_pos=None):
+        if interim_pos is not None:
+            final_pos = interim_pos
+        else:
+            final_pos = self.target
         for x in range(self.nodeAmount):
             for y in range(self.nodeAmount):
                 if 'nodeList' in locals():
@@ -371,34 +441,13 @@ class Map(object):
                     routes[self.locateInAM(element[0], element[1])].append(element.tolist())
             nodeList[newMin][3] = 1
             del(nears)
-            if newMin == self.locateInAM(self.target[0], self.target[1]):
+            if newMin == self.locateInAM(final_pos[0], final_pos[1]):
                 break
-        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
+        self.route = routes[self.locateInAM(final_pos[0], final_pos[1])][1:]
         self.sendData(type='route')
         return self.route
 
 # createTasks will use the points given from a Map object's dijkstra function to store the movements it must make
-
-
-def createTasks(points):
-    angle = r.angle
-    reducedpoints = []
-    angle = math.atan2(-(points[1][0] - points[0][0]), points[1][1] - points[0][1]) * 180 / math.pi
-    for el,nextel in zip(points, points[1:-1]+[None]):
-        newangle = math.atan2(-(nextel[0] - el[0]), nextel[1] - el[1]) * 180 / math.pi
-        if newangle != angle:
-            reducedpoints.append(el)
-            angle = newangle
-    reducedpoints.append(points[:-1])
-    return points, reducedpoints
-    for element in points[:-1]:
-        r.goToPoint(element[0], element[1])
-        m.sendData(type='pos_route', pos=r.position)
-    r.turnToPoint(points[-1][0], points[-1][1])
-    if r.hasObject:
-        r.place()
-    else:
-        r.pick()
 
 
 # stepTasks will create the generator object from the tasks list
@@ -460,7 +509,7 @@ if __name__ == '__main__':
                     placeL = m.target
                 else:
                     pickL = m.target
-            createTasks(m.dijkstra())
+            r.createTasks(m.dijkstra())
             if r.hasObject:
                 m.target = placeL
             else:
