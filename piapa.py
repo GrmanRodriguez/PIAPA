@@ -197,7 +197,7 @@ class Rover(MovementManager, ArmManager):
         for element in points[:-1]:
             self.turnToPoint(element[0], element[1])
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
-            interval = distance/(element[0] - self.position[0])
+            interval = distance/max([abs(element[0] - self.position[0]),abs(element[1]-self.position[1])])
             begin = time.time()
             beginterv = time.time()
             self.RL(1); self.FL(1); self.FR(1); self.RR(1)
@@ -205,12 +205,24 @@ class Rover(MovementManager, ArmManager):
                 if ((time.time() - beginterv) > (interval * 1 / self.Straight)):
                     if element[0] > self.position[0]:
                         self.position = [self.position[0]+1, self.position[1]]
+                    elif element[0] < self.position[0]:
+                        self.position = [self.position[0]-1, self.position[1]]
                     if element[1] > self.position[1]:
                         self.position = [self.position[0], self.position[1]+1]
+                    elif element[1] < self.position[1]:
+                        self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
                 obstacle = self.readSonic()
                 if obstacle < 2:
                     self.noMove()
+                    if element[0] > self.position[0]:
+                        m.disableNode(self.position[0]+1, self.position[1])                        
+                    elif element[0] < self.position[0]:
+                        m.disableNode(self.position[0]-1, self.position[1])   
+                    if element[1] > self.position[1]:
+                        m.disableNode(self.position[0], self.position[1]+1)   
+                    elif element[1] < self.position[1]:
+                        m.disableNode(self.position[0], self.position[1]-1)   
                     self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                     return
             self.noMove()
