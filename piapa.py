@@ -163,8 +163,8 @@ class Rover(MovementManager, ArmManager):
     def createTasks(self, points):
         def Reduce(points):
             angle=math.atan2(points[1][0]-points[0][0],points[1][1]-points[0][1])
-            reducedpoints=[points[0]]
-            for x in range(1,len(points)-1):
+            reducedpoints=[]
+            for x in range(len(points)-1):
                 newangle=math.atan2(points[x+1][0]-points[x][0],points[x+1][1]-points[x][1])
                 if newangle != angle:
                     reducedpoints.append(points[x])
@@ -189,8 +189,8 @@ class Rover(MovementManager, ArmManager):
     def createTasksComplete(self, points):
         def Reduce(points):
             angle=math.atan2(points[1][0]-points[0][0],points[1][1]-points[0][1])
-            reducedpoints=[points[0]]
-            for x in range(1,len(points)-1):
+            reducedpoints=[]
+            for x in range(len(points)-1):
                 newangle=math.atan2(points[x+1][0]-points[x][0],points[x+1][1]-points[x][1])
                 if newangle != angle:
                     reducedpoints.append(points[x])
