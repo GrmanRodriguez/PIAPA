@@ -173,7 +173,7 @@ class Rover(MovementManager, ArmManager):
                         reducedpoints.append(points[x])
             reducedpoints.append(points[len(points)-1])
             return reducedpoints
-        if len(points) > 4:
+        if len(points) > 2:
             points = Reduce(points)
         for element in points[:-1]:
             self.goToPoint(element[0], element[1])
@@ -197,7 +197,7 @@ class Rover(MovementManager, ArmManager):
                         reducedpoints.append(points[x])
             reducedpoints.append(points[len(points)-1])
             return reducedpoints
-        if len(points) > 4:
+        if len(points) > 2:
             points = Reduce(points)
         for element in points[:-1]:
             self.turnToPoint(element[0], element[1])
