@@ -321,9 +321,9 @@ class Map(object):
             elif data[1] == 'forward':
                 r.forw(self.stepSize)
             elif data[1] == 'clockw':
-                r.turn(-45)
+                r.turn(-180)
             elif data[1] == 'cclockw':
-                r.turn(45)
+                r.turn(180)
             elif data[1] == 'calibrate':
                 r.Straight = float(data[2])
                 r.turnClockw = float(data[3])
