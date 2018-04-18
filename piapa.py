@@ -519,7 +519,7 @@ def test():
 if __name__ == '__main__':
     r = Rover()
     r.position = [0,0]
-    r.angle = -90
+    r.angle = 270
     m = Map()
     m.start = r.position
     m.target = [6,6]
