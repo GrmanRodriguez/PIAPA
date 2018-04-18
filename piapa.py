@@ -318,6 +318,16 @@ class Map(object):
                     self.enableNode(int(data[2]),int(data[3]))
             elif data[1] == 'target':
                 self.target = [int(data[2]), int(data[3])]
+            elif data[1] == 'forw':
+                self.forw(self.stepSize)
+            elif data[1] == 'clockw':
+                self.turn(-45)
+            elif data[1] == 'cclockw':
+                self.turn(45)
+            elif data[1] == 'calibrate':
+                self.Straight = float(data[2])
+                self.turnClockw = float(data[3])
+                self.turnCounterClockw = float(data[4])
             self.lastOrder = int(data[0])
             return True
         else:
@@ -407,20 +417,20 @@ class Map(object):
 
     def dijkstra(self, interim_pos=None):
         if interim_pos is not None:
-            final_pos = interim_pos
+            starting_pos = interim_pos
         else:
-            final_pos = self.target
+            starting_pos = self.start
         for x in range(self.nodeAmount):
             for y in range(self.nodeAmount):
                 if 'nodeList' in locals():
                     nodeList = np.append(nodeList, [[x, y, float("inf"), 0]], axis=0)
                 else:
                     nodeList = np.array([[x, y, float("inf"), 0]])
-        nodeList[self.locateInAM(self.start[0], self.start[1])][2] = 0
+        nodeList[self.locateInAM(starting_pos[0], starting_pos[1])][2] = 0
         routes = []
         for x in range(self.nodeAmount ** 2):
             routes.append([])
-        routes[self.locateInAM(self.start[0], self.start[1])] = [self.start]
+        routes[self.locateInAM(starting_pos[0], starting_pos[1])] = [starting_pos]
 
         while 1:
             newList = nodeList[nodeList[:, 3] == 0]
@@ -457,9 +467,9 @@ class Map(object):
                     routes[self.locateInAM(element[0], element[1])].append(element.tolist())
             nodeList[newMin][3] = 1
             del(nears)
-            if newMin == self.locateInAM(final_pos[0], final_pos[1]):
+            if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
-        self.route = routes[self.locateInAM(final_pos[0], final_pos[1])][1:]
+        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
         self.sendData(type='route')
         return self.route
 
@@ -517,6 +527,7 @@ if __name__ == '__main__':
     placeL = m.start
     while not m.checkForStart():
         m.checkForOrders()
+        pickL = m.target
     while 1:
         try:
             isThereOrder = m.checkForOrders()
