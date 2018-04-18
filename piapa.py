@@ -318,16 +318,16 @@ class Map(object):
                     self.enableNode(int(data[2]),int(data[3]))
             elif data[1] == 'target':
                 self.target = [int(data[2]), int(data[3])]
-            elif data[1] == 'forw':
-                self.forw(self.stepSize)
+            elif data[1] == 'forward':
+                r.forw(self.stepSize)
             elif data[1] == 'clockw':
-                self.turn(-45)
+                r.turn(-45)
             elif data[1] == 'cclockw':
-                self.turn(45)
+                r.turn(45)
             elif data[1] == 'calibrate':
-                self.Straight = float(data[2])
-                self.turnClockw = float(data[3])
-                self.turnCounterClockw = float(data[4])
+                r.Straight = float(data[2])
+                r.turnClockw = float(data[3])
+                r.turnCounterClockw = float(data[4])
             self.lastOrder = int(data[0])
             return True
         else:
