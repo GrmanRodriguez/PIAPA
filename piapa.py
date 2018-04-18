@@ -113,51 +113,50 @@ class Rover(MovementManager, ArmManager):
         print('Angle is {}'.format(reading))
 
     def readSonic(self,option):
-        if option==1:
-            GPIO.output(self.FTHC, GPIO.HIGH)
-            time.sleep(0.00001)
-            GPIO.output(self.FTHC, GPIO.LOW)
-            while True:
-                startTimeF = time.time()
-                if GPIO.input(self.FEHC)==GPIO.HIGH:
-                    break
-            while True:
-                endTimeF = time.time()
-                if GPIO.input(self.FEHC)==GPIO.LOW:
-                    break
-            durationF=endTimeF-startTimeF
-            distanceF=(durationF*34300)/2
-            return distanceF
-        if option==2:
-            GPIO.output(self.RTHC, GPIO.HIGH)
-            time.sleep(0.00001)
-            GPIO.output(self.RTHC, GPIO.LOW)
-            while True:
-                startTime = time.time()
-                if GPIO.input(self.REHC)==GPIO.HIGH:
-                    break
-            while True:
-                endTime = time.time()
-                if GPIO.input(self.REHC)==GPIO.LOW:
-                    break
-            durationR=endTime-startTime
-            distanceR=(durationR*34300)/2
-            return distanceR
-        if option==3:
-            GPIO.output(self.LTHC, GPIO.HIGH)
-            time.sleep(0.00001)
-            GPIO.output(self.LTHC, GPIO.LOW)
-            while True:
-                startTimeL = time.time()
-                if GPIO.input(self.LEHC)==GPIO.HIGH:
-                    break
-            while True:
-                endTimeL = time.time()
-                if GPIO.input(self.LEHC)==GPIO.LOW:
-                    break
-            durationL=endTimeL-startTimeL
-            distanceL=(durationL*34300)/2
-            return distanceL
+        GPIO.output(self.FTHC, GPIO.HIGH)
+        time.sleep(0.00001)
+        GPIO.output(self.FTHC, GPIO.LOW)
+        while True:
+            startTimeF = time.time()
+            if GPIO.input(self.FEHC)==GPIO.HIGH:
+                break
+        while True:
+            endTimeF = time.time()
+            if GPIO.input(self.FEHC)==GPIO.LOW:
+                break
+        durationF=endTimeF-startTimeF
+        distanceF=(durationF*34300)/2
+        
+        GPIO.output(self.RTHC, GPIO.HIGH)
+        time.sleep(0.00001)
+        GPIO.output(self.RTHC, GPIO.LOW)
+        while True:
+            startTime = time.time()
+            if GPIO.input(self.REHC)==GPIO.HIGH:
+                break
+        while True:
+            endTime = time.time()
+            if GPIO.input(self.REHC)==GPIO.LOW:
+                break
+        durationR=endTime-startTime
+        distanceR=(durationR*34300)/2
+        
+        GPIO.output(self.LTHC, GPIO.HIGH)
+        time.sleep(0.00001)
+        GPIO.output(self.LTHC, GPIO.LOW)
+        while True:
+            startTimeL = time.time()
+            if GPIO.input(self.LEHC)==GPIO.HIGH:
+                break
+        while True:
+            endTimeL = time.time()
+            if GPIO.input(self.LEHC)==GPIO.LOW:
+                break
+        durationL=endTimeL-startTimeL
+        distanceL=(durationL*34300)/2
+        return distanceF
+        #return distanceL
+        #return distanceR
         #print('Distancia Lateral Derecha: {}'.format(distanceR))
 
     def createTasks(self, points):
