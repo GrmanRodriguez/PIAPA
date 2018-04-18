@@ -112,7 +112,7 @@ class Rover(MovementManager, ArmManager):
         print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
         print('Angle is {}'.format(reading))
 
-    def readSonic(self,option):
+    def readSonic(self):
         GPIO.output(self.FTHC, GPIO.HIGH)
         time.sleep(0.00001)
         GPIO.output(self.FTHC, GPIO.LOW)
