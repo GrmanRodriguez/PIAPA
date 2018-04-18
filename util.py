@@ -119,6 +119,7 @@ class MovementManager():
             self.FL(0)
             self.RL(0)
             self.RR(0)
+            time.sleep(0.02)
 
     # Function to stop all wheels
     def noMove(self):
