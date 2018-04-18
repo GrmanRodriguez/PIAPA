@@ -89,30 +89,32 @@ class MovementManager():
         self.RL(0)
         self.RR(0)
         time.sleep(0.2)
-        if ang > 0:  # if the angle is positive, turn left.
-            # To turn left we move the left wheels backwards
-            self.FL(2)
-            self.RL(2)
-            # To turn left we move the right wheels forwards
-            self.FR(1)
-            self.RR(1)
-            # A delay is added, that defines the angle
-            time.sleep(self.turnCounterClockw * abs(ang) / 360)
-            # The turn is stopped
-            self.FR(0)
-            self.FL(0)
-            self.RL(0)
-            self.RR(0)
-        if ang < 0:  # if the angle is negative, turn right.
-            # To turn right we move the left wheels forwards
-            self.FL(1)
-            self.RL(1)
-            # To turn right we move the right wheels backwards
-            self.FR(2)
-            self.RR(2)
-            # A delay is added, that defines the angle
-            time.sleep(self.turnClockw * abs(ang) / 360)
-            # The turn is stopped
+        if ang > 0:
+            duration = self.turnCounterClockw * abs(ang) / 360
+        else:
+            duration = self.turnClockw * abs(ang) / 360
+        starttime = time.time()
+        while time.time() > starttime + duration:
+            if ang > 0:  # if the angle is positive, turn left.
+                # To turn left we move the left wheels backwards
+                self.FL(2)
+                self.RL(2)
+                # To turn left we move the right wheels forwards
+                self.FR(1)
+                self.RR(1)
+                # A delay is added, that defines the angle
+                time.sleep(0.02)
+                # The turn is stopped
+            if ang < 0:  # if the angle is negative, turn right.
+                # To turn right we move the left wheels forwards
+                self.FL(1)
+                self.RL(1)
+                # To turn right we move the right wheels backwards
+                self.FR(2)
+                self.RR(2)
+                # A delay is added, that defines the angle
+                time.sleep(0.02)
+                # The turn is stopped
             self.FR(0)
             self.FL(0)
             self.RL(0)
