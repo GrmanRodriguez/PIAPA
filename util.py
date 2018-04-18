@@ -103,7 +103,7 @@ class MovementManager():
                 self.FR(1)
                 self.RR(1)
                 # A delay is added, that defines the angle
-                time.sleep(0.05)
+                time.sleep(0.1)
                 # The turn is stopped
             if ang < 0:  # if the angle is negative, turn right.
                 # To turn right we move the left wheels forwards
@@ -113,7 +113,7 @@ class MovementManager():
                 self.FR(2)
                 self.RR(2)
                 # A delay is added, that defines the angle
-                time.sleep(0.05)
+                time.sleep(0.1)
                 # The turn is stopped
             self.FR(0)
             self.FL(0)
