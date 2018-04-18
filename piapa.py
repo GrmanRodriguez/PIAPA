@@ -11,6 +11,7 @@ import time  # time library for delays
 import MySQLdb  # library needed for communication with UI through MySQL database
 from smbus import SMBus
 import threading
+import atexit
 from util import MovementManager, ArmManager
 # --------------------------------------------------
 # Classes
@@ -515,6 +516,11 @@ def test():
     m.target = [6, 0]
     createTasks(m.dijkstra(), r, m)
 
+@atexit.register
+def ctrlc():
+    r.noMove()
+    r.quit()
+    r.close()
 
 if __name__ == '__main__':
     r = Rover()
