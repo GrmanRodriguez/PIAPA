@@ -94,7 +94,7 @@ class MovementManager():
         else:
             duration = self.turnClockw * abs(ang) / 360
         starttime = time.time()
-        while time.time() > starttime + duration:
+        while time.time() < starttime + duration:
             if ang > 0:  # if the angle is positive, turn left.
                 # To turn left we move the left wheels backwards
                 self.FL(2)
