@@ -174,8 +174,10 @@ class Rover(MovementManager, ArmManager):
             reducedpoints.append(points[len(points)-1])
             return reducedpoints
         if len(points) > 2:
-            points = Reduce(points)
-        for element in points[:-1]:
+            reducedpoints = Reduce(points)
+        else:
+            reducedpoints = points
+        for element in reducedpoints[:-1]:
             self.goToPoint(element[0], element[1])
             m.sendData(type='pos_route', pos=r.position)
         self.turnToPoint(points[-1][0], points[-1][1])
@@ -198,8 +200,10 @@ class Rover(MovementManager, ArmManager):
             reducedpoints.append(points[len(points)-1])
             return reducedpoints
         if len(points) > 2:
-            points = Reduce(points)
-        for element in points[:-1]:
+            reducedpoints = Reduce(points)
+        else:
+            reducedpoints = points
+        for element in reducedpoints[:-1]:
             self.turnToPoint(element[0], element[1])
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
             interval = distance/max([abs(element[0] - self.position[0]),abs(element[1]-self.position[1])])
