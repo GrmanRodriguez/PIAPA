@@ -222,7 +222,7 @@ class Rover(MovementManager, ArmManager):
                         self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
                 obstacle = self.readSonic()
-                if obstacle < 30:
+                if obstacle < 35:
                     self.noMove()
                     y=0
                     x=0
