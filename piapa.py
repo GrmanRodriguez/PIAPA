@@ -234,7 +234,7 @@ class Rover(MovementManager, ArmManager):
                         x+=1   
                     elif element[1] < self.position[1]:
                         x-=1
-                    self.disableNode(self.position[0]+y,self.position[1]+x)   
+                    m.disableNode(self.position[0]+y,self.position[1]+x)   
                     self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                     return
             self.noMove()
