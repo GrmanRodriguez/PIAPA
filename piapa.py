@@ -128,33 +128,33 @@ class Rover(MovementManager, ArmManager):
         durationF=endTimeF-startTimeF
         distanceF=(durationF*343.0)/2.0
         
-        GPIO.output(self.RTHC, GPIO.HIGH)
-        time.sleep(0.00001)
-        GPIO.output(self.RTHC, GPIO.LOW)
-        while True:
-            startTime = time.time()
-            if GPIO.input(self.REHC)==GPIO.HIGH:
-                break
-        while True:
-            endTime = time.time()
-            if GPIO.input(self.REHC)==GPIO.LOW:
-                break
-        durationR=endTime-startTime
-        distanceR=(durationR*343.0)/2.0
+        # GPIO.output(self.RTHC, GPIO.HIGH)
+        # time.sleep(0.00001)
+        # GPIO.output(self.RTHC, GPIO.LOW)
+        # while True:
+        #     startTime = time.time()
+        #     if GPIO.input(self.REHC)==GPIO.HIGH:
+        #         break
+        # while True:
+        #     endTime = time.time()
+        #     if GPIO.input(self.REHC)==GPIO.LOW:
+        #         break
+        # durationR=endTime-startTime
+        # distanceR=(durationR*343.0)/2.0
         
-        GPIO.output(self.LTHC, GPIO.HIGH)
-        time.sleep(0.00001)
-        GPIO.output(self.LTHC, GPIO.LOW)
-        while True:
-            startTimeL = time.time()
-            if GPIO.input(self.LEHC)==GPIO.HIGH:
-                break
-        while True:
-            endTimeL = time.time()
-            if GPIO.input(self.LEHC)==GPIO.LOW:
-                break
-        durationL=endTimeL-startTimeL
-        distanceL=(durationL*343.0)/2.0
+        # GPIO.output(self.LTHC, GPIO.HIGH)
+        # time.sleep(0.00001)
+        # GPIO.output(self.LTHC, GPIO.LOW)
+        # while True:
+        #     startTimeL = time.time()
+        #     if GPIO.input(self.LEHC)==GPIO.HIGH:
+        #         break
+        # while True:
+        #     endTimeL = time.time()
+        #     if GPIO.input(self.LEHC)==GPIO.LOW:
+        #         break
+        # durationL=endTimeL-startTimeL
+        # distanceL=(durationL*343.0)/2.0
         return distanceF
         #return distanceL
         #return distanceR
@@ -236,9 +236,11 @@ class Rover(MovementManager, ArmManager):
                     if [self.position[0]+y,self.position[1]+x] not in m.disabledNodes:
                         self.noMove()
                         self.backw(0.02)
-                        m.disableNode(self.position[0]+y,self.position[1]+x)   
-                        self.createTasksComplete(m.dijkstra(interim_pos=self.position))
-                        return
+                        obstacle = self.readSonic()
+                        if obstacle < 0.35:
+                            m.disableNode(self.position[0]+y,self.position[1]+x)   
+                            self.createTasksComplete(m.dijkstra(interim_pos=self.position))
+                            return
                 time.sleep(0.009)
                 self.noMove()
                 time.sleep(0.005)
