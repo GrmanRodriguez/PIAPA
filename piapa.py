@@ -154,7 +154,7 @@ class Rover(MovementManager, ArmManager):
             if GPIO.input(self.LEHC)==GPIO.LOW:
                 break
         durationL=endTimeL-startTimeL
-        distanceL=(durationL*34300)/2
+        distanceL=(durationL*343)/2
         return distanceF
         #return distanceL
         #return distanceR
@@ -222,8 +222,7 @@ class Rover(MovementManager, ArmManager):
                         self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
                 obstacle = self.readSonic()
-                if obstacle < 35:
-                    self.noMove()
+                if obstacle < 0.35:
                     y=0
                     x=0
                     if element[0] > self.position[0]:
@@ -234,9 +233,12 @@ class Rover(MovementManager, ArmManager):
                         x+=1   
                     elif element[1] < self.position[1]:
                         x-=1
-                    m.disableNode(self.position[0]+y,self.position[1]+x)   
-                    self.createTasksComplete(m.dijkstra(interim_pos=self.position))
-                    return
+                    if [self.position[0]+y,self.position[1]+x] not in m.disabledNodes:
+                        self.noMove()
+                        self.backw(0.02)
+                        m.disableNode(self.position[0]+y,self.position[1]+x)   
+                        self.createTasksComplete(m.dijkstra(interim_pos=self.position))
+                        return
                 time.sleep(0.009)
                 self.noMove()
                 time.sleep(0.005)
