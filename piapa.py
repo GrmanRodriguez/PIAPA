@@ -224,14 +224,17 @@ class Rover(MovementManager, ArmManager):
                 obstacle = self.readSonic()
                 if obstacle < 20:
                     self.noMove()
+                    y=0
+                    x=0
                     if element[0] > self.position[0]:
-                        m.disableNode(self.position[0]+1, self.position[1])                        
+                        y+=1                        
                     elif element[0] < self.position[0]:
-                        m.disableNode(self.position[0]-1, self.position[1])   
+                        y-=1   
                     if element[1] > self.position[1]:
-                        m.disableNode(self.position[0], self.position[1]+1)   
+                        x+=1   
                     elif element[1] < self.position[1]:
-                        m.disableNode(self.position[0], self.position[1]-1)   
+                        x-=1
+                    self.disableNode(self.position[0]+y,self.position[1]+x)   
                     self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                     return
             self.noMove()
