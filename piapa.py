@@ -222,7 +222,7 @@ class Rover(MovementManager, ArmManager):
                         self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
                 obstacle = self.readSonic()
-                if obstacle < 25:
+                if obstacle < 30:
                     self.noMove()
                     y=0
                     x=0
@@ -237,9 +237,9 @@ class Rover(MovementManager, ArmManager):
                     m.disableNode(self.position[0]+y,self.position[1]+x)   
                     self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                     return
-                time.sleep(0.08)
+                time.sleep(0.008)
                 self.noMove()
-                time.sleep(0.04)
+                time.sleep(0.004)
             self.noMove()
             self.position = element
             m.sendData(type='pos_route', pos=self.position)
