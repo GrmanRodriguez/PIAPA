@@ -126,7 +126,7 @@ class Rover(MovementManager, ArmManager):
             if GPIO.input(self.FEHC)==GPIO.LOW:
                 break
         durationF=endTimeF-startTimeF
-        distanceF=(durationF*34300)/2
+        distanceF=(durationF*343.0)/2.0
         
         GPIO.output(self.RTHC, GPIO.HIGH)
         time.sleep(0.00001)
@@ -140,7 +140,7 @@ class Rover(MovementManager, ArmManager):
             if GPIO.input(self.REHC)==GPIO.LOW:
                 break
         durationR=endTime-startTime
-        distanceR=(durationR*34300)/2
+        distanceR=(durationR*343.0)/2.0
         
         GPIO.output(self.LTHC, GPIO.HIGH)
         time.sleep(0.00001)
