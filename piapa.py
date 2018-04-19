@@ -235,9 +235,9 @@ class Rover(MovementManager, ArmManager):
                         x-=1
                     if [self.position[0]+y,self.position[1]+x] not in m.disabledNodes:
                         self.noMove()
-                        self.backw(0.02)
                         obstacle = self.readSonic()
                         if obstacle < 0.35:
+                            self.backw(0.01)
                             m.disableNode(self.position[0]+y,self.position[1]+x)   
                             self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                             return
