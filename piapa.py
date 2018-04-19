@@ -154,7 +154,7 @@ class Rover(MovementManager, ArmManager):
             if GPIO.input(self.LEHC)==GPIO.LOW:
                 break
         durationL=endTimeL-startTimeL
-        distanceL=(durationL*343)/2
+        distanceL=(durationL*343.0)/2.0
         return distanceF
         #return distanceL
         #return distanceR
@@ -222,6 +222,7 @@ class Rover(MovementManager, ArmManager):
                         self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
                 obstacle = self.readSonic()
+                print(obstacle)
                 if obstacle < 0.35:
                     y=0
                     x=0
