@@ -222,7 +222,7 @@ class Rover(MovementManager, ArmManager):
                         self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
                 obstacle = self.readSonic()
-                if obstacle < 2:
+                if obstacle < 10:
                     self.noMove()
                     if element[0] > self.position[0]:
                         m.disableNode(self.position[0]+1, self.position[1])                        
@@ -546,7 +546,7 @@ if __name__ == '__main__':
                     placeL = m.target
                 else:
                     pickL = m.target
-            r.createTasks(m.dijkstra())
+            r.createTasksComplete(m.dijkstra())
             if r.hasObject:
                 m.target = placeL
             else:
