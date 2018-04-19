@@ -208,9 +208,9 @@ class Rover(MovementManager, ArmManager):
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
             interval = distance/max([abs(element[0] - self.position[0]),abs(element[1]-self.position[1])])
             begin = time.time()
-            beginterv = time.time()
-            self.RL(1); self.FL(1); self.FR(1); self.RR(1)
+            beginterv = time.time()            
             while ((time.time() - begin) < (distance * 1 / self.Straight)):
+                self.RL(1); self.FL(1); self.FR(1); self.RR(1)
                 if ((time.time() - beginterv) > (interval * 1 / self.Straight)):
                     if element[0] > self.position[0]:
                         self.position = [self.position[0]+1, self.position[1]]
@@ -222,7 +222,7 @@ class Rover(MovementManager, ArmManager):
                         self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
                 obstacle = self.readSonic()
-                if obstacle < 35:
+                if obstacle < 15:
                     self.noMove()
                     y=0
                     x=0
@@ -237,6 +237,9 @@ class Rover(MovementManager, ArmManager):
                     m.disableNode(self.position[0]+y,self.position[1]+x)   
                     self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                     return
+                time.sleep(0.1)
+                self.noMove()
+                time.sleep(0.02)
             self.noMove()
             self.position = element
             m.sendData(type='pos_route', pos=self.position)
