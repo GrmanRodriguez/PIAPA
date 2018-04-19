@@ -237,9 +237,9 @@ class Rover(MovementManager, ArmManager):
                     m.disableNode(self.position[0]+y,self.position[1]+x)   
                     self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                     return
-                time.sleep(0.1)
+                time.sleep(0.08)
                 self.noMove()
-                time.sleep(0.02)
+                time.sleep(0.04)
             self.noMove()
             self.position = element
             m.sendData(type='pos_route', pos=self.position)
