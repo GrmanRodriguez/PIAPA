@@ -181,10 +181,6 @@ class MovementManager():
             GPIO.output(self.FLF, GPIO.LOW)
             GPIO.output(self.FLB, GPIO.LOW)
 
-    # Function to handle object destruction and general pin cleanup when needed
-    def quit(self):
-        GPIO.cleanup()
-
 
 class ArmManager(serial.Serial):
     def __init__(self):

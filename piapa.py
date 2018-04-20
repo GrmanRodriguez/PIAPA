@@ -12,6 +12,7 @@ import MySQLdb  # library needed for communication with UI through MySQL databas
 from smbus import SMBus
 import threading
 import atexit
+import serial
 from util import MovementManager, ArmManager
 # --------------------------------------------------
 # Classes
@@ -26,15 +27,11 @@ class Rover(MovementManager, ArmManager):
     tasks = []  # This variable defines the tasks the vehicle must execute
     gridSize = 0.3  # The size of the cells in meters
     hasObject = False  # To know if it's in a picking phase or placing phase
-    magXMean = 0  # In order to calibrate the magnetometer
-    magYMean = 0  # In order to calibrate the magnetometer
 
     def __init__(self):
         MovementManager.__init__(self)
         ArmManager.__init__(self)
-        self.imu = SMBus(1)
-        self.imu.write_byte_data(0x68, 0x6b, 0x00)
-        self.imu.write_byte_data(0x68, 0x37, 0x22)
+        self.imu = serial.Serial('/dev/ttyUSB1',baudrate=115200)        
         self.no()
         self.armOff()
 
@@ -88,30 +85,27 @@ class Rover(MovementManager, ArmManager):
         if self.hasObject:
             self.hasObject = False
 
-    def readMags(self):
-        self.imu.write_byte_data(0x0c, 0x0a, 0x00)
-        time.sleep(0.01)
-        self.imu.write_byte_data(0x0c, 0x0a, 0x06)
-        time.sleep(0.01)
-        X = [self.imu.read_byte_data(0x0c, 0x04), self.imu.read_byte_data(0x0C, 0x03)]
-        Y = [self.imu.read_byte_data(0x0c, 0x06), self.imu.read_byte_data(0x0C, 0x05)]
-        readingX = int((hex(X[0])[2:] + hex(X[1])[2:]), 16)
-        if readingX > 0x7FFF:
-            readingX -= 0x10000
-        readingY = int((hex(Y[0])[2:] + hex(Y[1])[2:]), 16)
-        if readingY > 0x7FFF:
-            readingY -= 0x10000
-        self.imu.write_byte_data(0x0c, 0x0a, 0x00)
-        return readingX, readingY
+    def calibrateMag(self):
+        self.imu.timeout = None
+        self.imu.write('c')
+        self.RL(1); self.FL(1); self.RR(2); self.FR(2)
+        status = self.imu.readline()
+        self.noMove()
+        status = eval(status[:-1])
+        if status == 1:
+            print('Succesful Calibration')
+        else:
+            print('Something Happened')
 
     def readAngle(self):
-        X, Y = self.readMags
-        reading = math.atan2(Y, X) * 180 / math.pi
-        if reading < 0:
-            reading += 360
-        print('The results for X were: {} in high byte, {} for low byte, total measurement is {}'.format(X[0], X[1], readingX))
-        print('The results for Y were: {} in high byte, {} for low byte, total measurement is {}'.format(Y[0], Y[1], readingY))
-        print('Angle is {}'.format(reading))
+        self.imu.timeout = 3
+        self.imu.write('s')
+        angle = self.imu.readline()
+        while len(angle) == 0:
+            self.imu.write('s')
+            angle = self.imu.readline()
+        angle = eval(angle[:-1])
+        return angle
 
     def readSonic(self):
         GPIO.output(self.FTHC, GPIO.HIGH)
@@ -252,6 +246,13 @@ class Rover(MovementManager, ArmManager):
             self.place()
         else:
             self.pick()
+
+    # Function to handle object destruction and general pin cleanup when needed
+    def quit(self):
+        self.noMove()
+        self.close()
+        self.imu.close()
+        GPIO.cleanup()
 
 class Map(object):
     def __init__(self):
@@ -532,9 +533,8 @@ def test():
 
 @atexit.register
 def ctrlc():
-    r.noMove()
     r.quit()
-    r.close()
+
 
 if __name__ == '__main__':
     r = Rover()
@@ -564,5 +564,4 @@ if __name__ == '__main__':
             m.start = r.position
         except KeyboardInterrupt:
             break
-    r.quit()
-    r.close()
+ 
