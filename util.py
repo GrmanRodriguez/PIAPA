@@ -121,15 +121,20 @@ class MovementManager():
             self.RL(0)
             self.RR(0)
             time.sleep(0.02)
-        angle = self.readAngle()
-        print('Angle before turn: {}'.format(self.imuangle))
-        print('Angle after turn: {}'.format(angle))
-        if abs(angle - (self.imuangle + ang)) > self.tolerance:
-            toTurn = angle - self.imuangle
-            self.imuangle = angle
+
+    def turnWithAngle(self, ang):
+        originalangle = self.imuangle
+        finalangle = self.imuangle + ang
+        print('Angle before turn: {}'.format(originalangle))
+        self.turn(ang)
+        actualangle = self.readAngle()
+        print('Angle after turn: {}'.format(actualangle))
+        while abs(actualangle - finalangle) > self.tolerance:
+            toTurn = finalangle - actualangle
             self.turn(toTurn)
-        else:
-            self.imuangle = angle
+            self.actualangle = self.readAngle()
+            print('Angle after turn: {}'.format(actualangle))
+        self.imuangle = actualangle
 
     # Function to stop all wheels
     def noMove(self):
