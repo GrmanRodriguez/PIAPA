@@ -29,6 +29,7 @@ class MovementManager():
     REHC = 31  # The right HC-SR04 Echo is connected to GPIO pin 35
     LTHC = 38  # The left HC-SR04 Trigger is connected to GPIO pin 38
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
+    tolerance = 1
 
     def __init__(self):
         # Setup pins as outputs
@@ -120,6 +121,12 @@ class MovementManager():
             self.RL(0)
             self.RR(0)
             time.sleep(0.02)
+        angle = self.readAngle()
+        if abs(angle - self.imuangle) > self.tolerance:
+            self.imuangle = angle
+            self.turn(self.readAngle - self.angle)
+        else:
+            self.imuangle = angle
 
     # Function to stop all wheels
     def noMove(self):

@@ -31,7 +31,11 @@ class Rover(MovementManager, ArmManager):
     def __init__(self):
         MovementManager.__init__(self)
         ArmManager.__init__(self)
-        self.imu = serial.Serial('/dev/ttyACM0',baudrate=115200)        
+        self.imu = serial.Serial('/dev/ttyACM0',baudrate=115200)
+        anglelist = []
+        for x in range(5):
+            anglelist.append(self.readAngle())
+        self.imuangle = sum(anglelist)/len(anglelist)        
         self.no()
         self.armOff()
 
