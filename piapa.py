@@ -31,7 +31,7 @@ class Rover(MovementManager, ArmManager):
     def __init__(self):
         MovementManager.__init__(self)
         ArmManager.__init__(self)
-        self.imu = serial.Serial('/dev/ttyUSB1',baudrate=115200)        
+        #self.imu = serial.Serial('/dev/ttyUSB1',baudrate=115200)        
         self.no()
         self.armOff()
 
