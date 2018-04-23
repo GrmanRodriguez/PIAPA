@@ -122,9 +122,9 @@ class MovementManager():
             self.RR(0)
             time.sleep(0.02)
         angle = self.readAngle()
-        print(self.imuangle)
-        print(angle)
-        if abs(angle - (self.imuangle + ang)) < self.tolerance and abs(angle - (self.imuangle + ang)) > self.tolerance:
+        print('Angle before turn: {}'.format(self.imuangle))
+        print('Angle after turn: {}'.format(angle))
+        if abs(angle - (self.imuangle + ang)) > self.tolerance:
             toTurn = angle - self.imuangle
             self.imuangle = angle
             self.turn(toTurn)
