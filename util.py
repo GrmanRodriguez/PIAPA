@@ -124,7 +124,7 @@ class MovementManager():
         angle = self.readAngle()
         if abs(angle - self.imuangle) > self.tolerance:
             self.imuangle = angle
-            self.turn(self.readAngle - self.angle)
+            self.turn(self.readAngle() - self.angle)
         else:
             self.imuangle = angle
 
