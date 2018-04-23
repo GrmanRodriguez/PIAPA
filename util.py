@@ -132,7 +132,7 @@ class MovementManager():
         while abs(actualangle - finalangle) > self.tolerance:
             toTurn = finalangle - actualangle
             self.turn(toTurn)
-            self.actualangle = self.readAngle()
+            actualangle = self.readAngle()
             print('Angle after turn: {}'.format(actualangle))
         self.imuangle = actualangle
 
