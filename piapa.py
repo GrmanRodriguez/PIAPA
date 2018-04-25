@@ -201,6 +201,8 @@ class Rover(MovementManager, ArmManager):
             reducedpoints = Reduce(points)
         else:
             reducedpoints = points
+        print('Points: {}'.format(points))
+        print('Reduced Points: {}'.format(reducedpoints))            
         for element in reducedpoints[:-1]:
             self.turnToPoint(element[0], element[1])
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
@@ -235,6 +237,7 @@ class Rover(MovementManager, ArmManager):
                         self.noMove()
                         obstacle = self.readSonic()
                         if obstacle < 0.35:
+                            print('Obstacle found')
                             self.backw(0.01)
                             m.disableNode(self.position[0]+y,self.position[1]+x)   
                             self.createTasksComplete(m.dijkstra(interim_pos=self.position))
