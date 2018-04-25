@@ -20,8 +20,8 @@ class MovementManager():
     FLB = 13  # The backwards-moving end of the front left motor is connected to GPIO pin 13
     FRF = 16  # The forward-moving end of the front right motor is connected to GPIO pin 16
     FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
-    turnClockw = 1.98  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
-    turnCounterClockw = 2.15  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
+    turnClockw = 1.92  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
+    turnCounterClockw = 1.925  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
     Straight = 0.9  # Time needed by the robot to advance 1 meter (TUNED)
     FTHC = 36  # The front HC-SR04 Trigger is connected to GPIO pin 36
     FEHC = 37  # The front HC-SR04 Echo is connected to GPIO pin 37
@@ -30,6 +30,7 @@ class MovementManager():
     LTHC = 38  # The left HC-SR04 Trigger is connected to GPIO pin 38
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
     tolerance = 1
+    t45 = 0.1
 
     def __init__(self):
         # Setup pins as outputs
@@ -94,7 +95,7 @@ class MovementManager():
             duration = self.turnCounterClockw * abs(ang) / 360
         else:
             duration = self.turnClockw * abs(ang) / 360
-            duration += 0.1
+            duration += self.t45
         starttime = time.time()
         while time.time() < starttime + duration:
             if ang > 0:  # if the angle is positive, turn left.
