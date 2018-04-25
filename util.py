@@ -94,6 +94,8 @@ class MovementManager():
             duration = self.turnCounterClockw * abs(ang) / 360
         else:
             duration = self.turnClockw * abs(ang) / 360
+        if abs(ang) == 45:
+            duration += 0.2
         starttime = time.time()
         while time.time() < starttime + duration:
             if ang > 0:  # if the angle is positive, turn left.
