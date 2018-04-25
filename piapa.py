@@ -41,17 +41,18 @@ class Rover(MovementManager, ArmManager):
 
     # goToPoint will execute the necessary commands to go to the desired destination
     def goToPoint(self, y, x):
-        ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-        if ang < 0:
-            ang = 360 + ang
-        toTurn = (ang - self.angle)
-        if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
-            toTurn = toTurn - 360 * np.sign(toTurn)
-        self.turn(toTurn)
-        self.angle = ang
-        distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
-        self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
-        self.position = [y, x]  # Finally, update the state of the vehicle
+        if self.position != [y,x]:
+            ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
+            if ang < 0:
+                ang = 360 + ang
+            toTurn = (ang - self.angle)
+            if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
+                toTurn = toTurn - 360 * np.sign(toTurn)
+            self.turn(toTurn)
+            self.angle = ang
+            distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
+            self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
+            self.position = [y, x]  # Finally, update the state of the vehicle
 
     def turnToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
@@ -195,14 +196,13 @@ class Rover(MovementManager, ArmManager):
                 else:
                     if x == len(points)-2:
                         reducedpoints.append(points[x])
+                angle = newangle
             reducedpoints.append(points[len(points)-1])
             return reducedpoints
         if len(points) > 2:
             reducedpoints = Reduce(points)
         else:
-            reducedpoints = points
-        print('Points: {}'.format(points))
-        print('Reduced Points: {}'.format(reducedpoints))            
+            reducedpoints = points         
         for element in reducedpoints[:-1]:
             self.turnToPoint(element[0], element[1])
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
@@ -492,7 +492,7 @@ class Map(object):
             del(nears)
             if newMin == self.locateInAM(self.target[0], self.target[1]):
                 break
-        self.route = routes[self.locateInAM(self.target[0], self.target[1])][1:]
+        self.route = routes[self.locateInAM(self.target[0], self.target[1])]
         self.sendData(type='route')
         return self.route
 
