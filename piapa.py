@@ -269,7 +269,7 @@ class Map(object):
         # The map is divided in a 7x7 cells arranged in matrix format from [0,0] to [6,6]
         # start and target are 2x1 lists
         self.nodeAmount = 7
-        self.stepSize = 0.3  # Size of the cells in m
+        self.stepSize = 0.35  # Size of the cells in m
         self._start = None
         self._target = None
         self.adjMatrixCreate()
