@@ -202,7 +202,9 @@ class Rover(MovementManager, ArmManager):
         if len(points) > 2:
             reducedpoints = Reduce(points)
         else:
-            reducedpoints = points         
+            reducedpoints = points
+        print(points)
+        print(reducedpoints)         
         for element in reducedpoints[:-1]:
             self.turnToPoint(element[0], element[1])
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
