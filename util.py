@@ -11,7 +11,7 @@ import serial  # library
 
 
 class MovementManager():
-    gridSize = 0.35  # The size of the cells in meters
+    gridSize = 0.4  # The size of the cells in meters
     RLF = 19  # The forward-moving end of the rear left motor is connected to GPIO pin 19
     RLB = 21  # The backwards-moving end of the rear left motor is connected to GPIO pin 21
     RRF = 22  # The forward-moving end of the rear right motor is connected to GPIO pin 8
@@ -200,8 +200,8 @@ class MovementManager():
 class ArmManager(serial.Serial):
     def __init__(self):
         serial.Serial.__init__(self, '/dev/serial0', 115200)
-        self.neutralArmPosition = '#0 p2000 s1050 #1 p2450 s300 #2 p3200 s300 #3 p0 '
-        self.stretchedArmPosition = '#0 p2000 s1050 #1 p1450 s300 #2 p1800 s300 #3 p2250 s300 '
+        self.neutralArmPosition = '#0 p800 s1050 #1 p2450 s300 #2 p3200 s300 #3 p0 '
+        self.stretchedArmPosition = '#0 p800 s1050 #1 p1450 s300 #2 p1800 s300 #3 p2250 s300 '
         self.closedHand = '#4 p2400\r\n'
         self.openedHand = '#4 p900\r\n'
         self.off = '#0 p0 #1 p0 #2 p0 #3 p0 #4 p0\r\n'
