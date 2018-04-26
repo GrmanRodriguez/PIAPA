@@ -25,7 +25,7 @@ class Rover(MovementManager, ArmManager):
     angle = 270
     position = [0, 0]
     tasks = []  # This variable defines the tasks the vehicle must execute
-    gridSize = 0.3  # The size of the cells in meters
+    gridSize = 0.4  # The size of the cells in meters
     hasObject = False  # To know if it's in a picking phase or placing phase
 
     def __init__(self):
