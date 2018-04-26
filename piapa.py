@@ -241,7 +241,7 @@ class Rover(MovementManager, ArmManager):
                         obstacle = self.readSonic()
                         if obstacle < 0.35:
                             print('Obstacle found')
-                            self.backw(0.01)
+                            self.backw(0.03)
                             m.disableNode(self.position[0]+y,self.position[1]+x)   
                             self.createTasksComplete(m.dijkstra(interim_pos=self.position))
                             return
