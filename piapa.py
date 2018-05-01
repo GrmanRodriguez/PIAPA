@@ -54,14 +54,17 @@ class Rover(MovementManager, ArmManager):
             self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
             self.position = [y, x]  # Finally, update the state of the vehicle
 
-    def turnToPoint(self, y, x):
+    def turnToPoint(self, y, x, corrector=None):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         if ang < 0:
             ang = 360 + ang
         toTurn = ang - self.angle
         if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
             toTurn = toTurn - 360 * np.sign(toTurn)
-        self.turn(toTurn)
+        if corrector is not None:
+            self.turn(toTurn + corrector)
+        else:
+            self.turn(toTurn)
         self.angle = ang
 
     def pick(self):
@@ -185,7 +188,7 @@ class Rover(MovementManager, ArmManager):
         else:
             self.pick()
 
-    def createTasksComplete(self, points):
+    def createTasksComplete(self, points, corrector = None):
         def Reduce(points):
             angle=math.atan2(points[1][0]-points[0][0],points[1][1]-points[0][1])
             reducedpoints=[]
@@ -207,7 +210,7 @@ class Rover(MovementManager, ArmManager):
         print(reducedpoints)         
         for element in reducedpoints[:-1]:
             print('going to {}'.format(element))
-            self.turnToPoint(element[0], element[1])
+            self.turnToPoint(element[0], element[1], corrector)
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
             interval = distance/max([abs(element[0] - self.position[0]),abs(element[1]-self.position[1])])
             begin = time.time()

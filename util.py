@@ -29,7 +29,7 @@ class MovementManager():
     REHC = 31  # The right HC-SR04 Echo is connected to GPIO pin 35
     LTHC = 38  # The left HC-SR04 Trigger is connected to GPIO pin 38
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
-    tolerance = 1
+    tolerance = 2
     t45 = 0.1
 
     def __init__(self):
@@ -116,25 +116,42 @@ class MovementManager():
                 self.FR(2)
                 self.RR(2)
                 # A delay is added, that defines the angle
-                time.sleep(0.1)
+                time.sleep(0.08)
                 # The turn is stopped
             self.FR(0)
             self.FL(0)
             self.RL(0)
             self.RR(0)
-            time.sleep(0.02)
+            time.sleep(0.05)
 
     def turnWithAngle(self, ang):
         originalangle = self.imuangle
         finalangle = self.imuangle + ang
+        finalangle = finalangle % 360
         print('Angle before turn: {}'.format(originalangle))
         self.turn(ang)
-        actualangle = self.readAngle()
+        angles = []
+        for x in range(5):
+            angles.append(self.readAngle())
+        actualangle = sum(angles) / len(angles)
         print('Angle after turn: {}'.format(actualangle))
-        while abs(actualangle - finalangle) > self.tolerance:
-            toTurn = finalangle - actualangle
+        # The anglelist variable holds: The initial angle, the desired final angle and the measured final angle
+        anglelist = [originalangle, finalangle, actualangle]
+        while abs(anglelist[2] - anglelist[1]) > self.tolerance:
+            corrector = abs(anglelist[1] - anglelist[0]) / abs(anglelist[2] - anglelist[0])
+            self.turnClockw *= corrector
+            self.turnCounterClockw *= corrector
+            toTurn = anglelist[1] - anglelist[0]
+            for x in range(5):
+                angles.append(self.readAngle())
+            actualangle = sum(angles) / len(angles)
+            anglelist[0] = actualangle
+            anglelist[1] = actualangle + toTurn
             self.turn(toTurn)
-            actualangle = self.readAngle()
+            for x in range(5):
+                angles.append(self.readAngle())
+            actualangle = sum(angles) / len(angles)
+            anglelist[2] = actualangle
             print('Angle after turn: {}'.format(actualangle))
         self.imuangle = actualangle
 
