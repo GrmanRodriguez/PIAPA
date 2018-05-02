@@ -147,6 +147,7 @@ class MovementManager():
             #self.turnCounterClockw *= corrector
             toTurn = anglelist[1] - anglelist[2]
             print('Now the Rover will turn {} - {} = {} deg'.format(anglelist[1], anglelist[2], toTurn))
+            self.turn(toTurn)
             for x in range(5):
                 angles.append(self.readAngle())
             actualangle = sum(angles) / len(angles)
