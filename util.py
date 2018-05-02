@@ -29,8 +29,9 @@ class MovementManager():
     REHC = 31  # The right HC-SR04 Echo is connected to GPIO pin 35
     LTHC = 38  # The left HC-SR04 Trigger is connected to GPIO pin 38
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
-    tolerance = 5
+    tolerance = 5  # The tolerance variable is used to define an acceptable range between the turning angle and the IMU measured angle
     t45 = 0.1
+    imuAngList = [44.6607, 92.60857, 143.20214, 185.845, 238.2735, 298.9035, 345.06, 15.597]
 
     def __init__(self):
         # Setup pins as outputs
@@ -126,9 +127,7 @@ class MovementManager():
 
     def turnWithAngle(self, ang):
         angles = []
-        for x in range(8):
-            angles.append(self.readAngle())
-        self.imuangle = sum(angles) / len(angles)
+        self.imuangle = self.avgAngle()
         if 340 <= self.imuangle <= 355:
             self.imuangle -= 30
         originalangle = self.imuangle
@@ -138,27 +137,23 @@ class MovementManager():
             finalangle -= 30
         print('Angle before turn: {}'.format(originalangle))
         self.turn(ang)
-        angles = []
-        for x in range(5):
-            angles.append(self.readAngle())
-        actualangle = sum(angles) / len(angles)
+        actualangle = self.avgAngle()
         print('Angle after turn: {}'.format(actualangle))
-        # The anglelist variable holds: The initial angle, the desired final angle and the measured final angle
+        # The anglelist variable holds: The initial angle, the desired final angle and the measured actual angle
         anglelist = [originalangle, finalangle, actualangle]
         while abs(anglelist[2] - anglelist[1]) > self.tolerance:
-            #corrector = abs(anglelist[1] - anglelist[0]) / abs(anglelist[2] - anglelist[0])
-            #self.turnClockw *= corrector
-            #self.turnCounterClockw *= corrector
             toTurn = anglelist[1] - anglelist[2]
             print('Now the Rover will turn {} - {} = {} deg'.format(anglelist[1], anglelist[2], toTurn))
             self.turn(toTurn)
             time.sleep(0.2)
-            for x in range(8):
-                angles.append(self.readAngle())
-            actualangle = sum(angles) / len(angles)
+            actualangle = self.avgAngle()
             anglelist[2] = actualangle
             print('Angle after turn: {}'.format(actualangle))
         self.imuangle = actualangle
+
+    def turnToAngle(self, ang):
+        self.imuangle = self.avgAngle()
+        self.turnWithAngle(self.imuAngList[int(ang / 45)] - self.imuangle)
 
     # Function to stop all wheels
     def noMove(self):

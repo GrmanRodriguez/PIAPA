@@ -45,10 +45,12 @@ class Rover(MovementManager, ArmManager):
             ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
             if ang < 0:
                 ang = 360 + ang
-            toTurn = (ang - self.angle)
-            if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
-                toTurn = toTurn - 360 * np.sign(toTurn)
-            self.turn(toTurn)
+            # toTurn = (ang - self.angle)
+            # if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
+            #     toTurn = toTurn - 360 * np.sign(toTurn)
+            # self.turn(toTurn)
+            # self.angle = ang
+            self.turnWithAngle(ang)
             self.angle = ang
             distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
             self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
@@ -58,13 +60,14 @@ class Rover(MovementManager, ArmManager):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         if ang < 0:
             ang = 360 + ang
-        toTurn = ang - self.angle
-        if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
-            toTurn = toTurn - 360 * np.sign(toTurn)
-        if corrector is not None:
-            self.turn(toTurn + corrector)
-        else:
-            self.turn(toTurn)
+        # toTurn = ang - self.angle
+        # if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
+        #     toTurn = toTurn - 360 * np.sign(toTurn)
+        # if corrector is not None:
+        #     self.turn(toTurn + corrector)
+        # else:
+        #     self.turn(toTurn)
+        self.turnToAngle(ang)
         self.angle = ang
 
     def pick(self):
@@ -114,6 +117,13 @@ class Rover(MovementManager, ArmManager):
             angle = self.imu.readline()
         angle = eval(angle[:-1])
         return angle
+
+    def avgAngle(self):
+        angles = []
+        for x in range(8):
+            angle = self.readAngle()
+            angles.append(angle)
+        return sum(angles)/len(angles)
 
     def readSonic(self):
         GPIO.output(self.FTHC, GPIO.HIGH)
