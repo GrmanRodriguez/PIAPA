@@ -116,7 +116,7 @@ class MovementManager():
                 self.FR(2)
                 self.RR(2)
                 # A delay is added, that defines the angle
-                time.sleep(0.08)
+                time.sleep(0.1)
                 # The turn is stopped
             self.FR(0)
             self.FL(0)
