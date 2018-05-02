@@ -126,17 +126,22 @@ class MovementManager():
             self.RR(0)
             time.sleep(0.05)
 
-    def turnWithAngle(self, ang):
+    def turnWithAngle(self, ang, toAng=None):
         self.imuangle = self.avgAngle()
         if 340 <= self.imuangle <= 355:
             self.imuangle -= 30
         originalangle = self.imuangle
-        finalangle = self.imuangle + ang
-        finalangle = finalangle % 360
-        if 340 <= finalangle <= 355:
-            finalangle -= 30
-        print('Angle before turn: {}'.format(originalangle))
-        self.turn(ang)
+        if toAng is not None:
+            finalangle = ang
+            toTurn = finalangle - originalangle
+        else:
+            finalangle = self.imuangle + ang
+            toTurn = ang
+            finalangle = finalangle % 360
+            if 340 <= finalangle <= 355:
+                finalangle -= 30
+            print('Angle before turn: {}'.format(originalangle))
+        self.turn(toTurn)
         actualangle = self.avgAngle()
         print('Angle after turn: {}'.format(actualangle))
         # The anglelist variable holds: The initial angle, the desired final angle and the measured actual angle
@@ -153,11 +158,11 @@ class MovementManager():
 
     def turnToAngle(self, ang):
         self.imuangle = self.avgAngle()
-        print('You want to go to {}, the {}th element in imuAngList'.format(self.imuAngList[int(ang / 45)], int(ang / 45)))
         toTurn = self.imuAngList[int(ang / 45)] - self.imuangle
         if abs(toTurn) > 180:
             toTurn -= 360 * np.sign(toTurn)
-        self.turnWithAngle(toTurn)
+        print('You want to go to {}, from {}, so turn will be {}'.format(self.imuAngList[int(ang / 45)], self.imuangle, toTurn))
+        self.turnWithAngle(toTurn, toAng=1)
 
     # Function to stop all wheels
     def noMove(self):
