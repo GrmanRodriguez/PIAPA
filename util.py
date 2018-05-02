@@ -7,6 +7,7 @@
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 import serial  # library
+import numpy as np
 # --------------------------------------------------
 
 
@@ -154,6 +155,8 @@ class MovementManager():
         self.imuangle = self.avgAngle()
         print('You want to go to {}, the {}th element in imuAngList'.format(self.imuAngList[int(ang / 45)], int(ang / 45)))
         toTurn = self.imuAngList[int(ang / 45)] - self.imuangle
+        if abs(toTurn) > 180:
+            toTurn -= 360 * np.sign(toTurn)
         self.turnWithAngle(toTurn)
 
     # Function to stop all wheels
