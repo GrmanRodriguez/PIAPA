@@ -134,6 +134,8 @@ class MovementManager():
         originalangle = self.imuangle
         finalangle = self.imuangle + ang
         finalangle = finalangle % 360
+        if 340 <= finalangle <= 355:
+            finalangle -= 30
         print('Angle before turn: {}'.format(originalangle))
         self.turn(ang)
         angles = []
