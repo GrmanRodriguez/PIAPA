@@ -29,7 +29,7 @@ class MovementManager():
     REHC = 31  # The right HC-SR04 Echo is connected to GPIO pin 35
     LTHC = 38  # The left HC-SR04 Trigger is connected to GPIO pin 38
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
-    tolerance = 2
+    tolerance = 3
     t45 = 0.1
 
     def __init__(self):
@@ -146,6 +146,7 @@ class MovementManager():
             #self.turnClockw *= corrector
             #self.turnCounterClockw *= corrector
             toTurn = anglelist[1] - anglelist[0]
+            print('Now the Rover will turn {} - {} = {} deg'.format(anglelist[1], anglelist[0], toTurn))
             for x in range(5):
                 angles.append(self.readAngle())
             actualangle = sum(angles) / len(angles)
