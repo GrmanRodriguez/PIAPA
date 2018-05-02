@@ -50,7 +50,7 @@ class Rover(MovementManager, ArmManager):
             #     toTurn = toTurn - 360 * np.sign(toTurn)
             # self.turn(toTurn)
             # self.angle = ang
-            self.turnToPoint(ang)
+            self.turnToAngle(ang)
             self.angle = ang
             distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
             self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
