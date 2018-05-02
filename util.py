@@ -142,9 +142,9 @@ class MovementManager():
         # The anglelist variable holds: The initial angle, the desired final angle and the measured final angle
         anglelist = [originalangle, finalangle, actualangle]
         while abs(anglelist[2] - anglelist[1]) > self.tolerance:
-            corrector = abs(anglelist[1] - anglelist[0]) / abs(anglelist[2] - anglelist[0])
-            self.turnClockw *= corrector
-            self.turnCounterClockw *= corrector
+            #corrector = abs(anglelist[1] - anglelist[0]) / abs(anglelist[2] - anglelist[0])
+            #self.turnClockw *= corrector
+            #self.turnCounterClockw *= corrector
             toTurn = anglelist[1] - anglelist[0]
             for x in range(5):
                 angles.append(self.readAngle())
