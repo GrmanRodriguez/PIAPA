@@ -126,7 +126,6 @@ class MovementManager():
             time.sleep(0.05)
 
     def turnWithAngle(self, ang):
-        angles = []
         self.imuangle = self.avgAngle()
         if 340 <= self.imuangle <= 355:
             self.imuangle -= 30
@@ -153,7 +152,9 @@ class MovementManager():
 
     def turnToAngle(self, ang):
         self.imuangle = self.avgAngle()
-        self.turnWithAngle(self.imuAngList[int(ang / 45)] - self.imuangle)
+        print('You want to go to {}, the {}th element in imuAngList'.format(self.imuAngList[int(ang / 45)], int(ang / 45)))
+        toTurn = self.imuAngList[int(ang / 45)] - self.imuangle
+        self.turnWithAngle(toTurn)
 
     # Function to stop all wheels
     def noMove(self):
