@@ -129,6 +129,8 @@ class MovementManager():
         for x in range(8):
             angles.append(self.readAngle())
         self.imuangle = sum(angles) / len(angles)
+        if 340 <= self.imuangle <= 355:
+            self.imuangle -= 30
         originalangle = self.imuangle
         finalangle = self.imuangle + ang
         finalangle = finalangle % 360
