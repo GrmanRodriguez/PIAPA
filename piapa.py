@@ -25,7 +25,6 @@ class Rover(MovementManager, ArmManager):
     angle = 270
     position = [0, 0]
     tasks = []  # This variable defines the tasks the vehicle must execute
-    gridSize = 0.4  # The size of the cells in meters
     hasObject = False  # To know if it's in a picking phase or placing phase
 
     def __init__(self):
@@ -45,13 +44,9 @@ class Rover(MovementManager, ArmManager):
             ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
             if ang < 0:
                 ang = 360 + ang
-            # toTurn = (ang - self.angle)
-            # if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
-            #     toTurn = toTurn - 360 * np.sign(toTurn)
-            # self.turn(toTurn)
-            # self.angle = ang
-            self.turnToAngle(ang)
-            self.angle = ang
+            if ang != self.angle:
+                self.turnToAngle(ang)
+                self.angle = ang
             distance = ((y - self.position[0]) ** 2 + (x - self.position[1]) ** 2) ** 0.5 * self.gridSize
             self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
             self.position = [y, x]  # Finally, update the state of the vehicle
@@ -282,7 +277,7 @@ class Map(object):
         # The map is divided in a 7x7 cells arranged in matrix format from [0,0] to [6,6]
         # start and target are 2x1 lists
         self.nodeAmount = 7
-        self.stepSize = 0.4  # Size of the cells in m
+        self.stepSize = 0.35  # Size of the cells in m
         self._start = None
         self._target = None
         self.adjMatrixCreate()

@@ -12,7 +12,7 @@ import numpy as np
 
 
 class MovementManager():
-    gridSize = 0.4  # The size of the cells in meters
+    gridSize = 0.35  # The size of the cells in meters
     RLF = 19  # The forward-moving end of the rear left motor is connected to GPIO pin 19
     RLB = 21  # The backwards-moving end of the rear left motor is connected to GPIO pin 21
     RRF = 22  # The forward-moving end of the rear right motor is connected to GPIO pin 8
