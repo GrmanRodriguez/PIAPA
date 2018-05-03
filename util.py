@@ -23,7 +23,7 @@ class MovementManager():
     FRB = 18  # The backwards-moving end of the front right motor is connected to GPIO pin 13
     turnClockw = 3.6  # Time needed by the robot to make a 360 degree clockwise turn (TUNED)
     turnCounterClockw = 3.6  # Time needed by the robot to make a 360 degree counterclockwise turn (TUNED)
-    Straight = 0.9  # Time needed by the robot to advance 1 meter (TUNED)
+    Straight = 0.85  # Time needed by the robot to advance 1 meter (TUNED)
     FTHC = 36  # The front HC-SR04 Trigger is connected to GPIO pin 36
     FEHC = 37  # The front HC-SR04 Echo is connected to GPIO pin 37
     RTHC = 29  # The right HC-SR04 Trigger is connected to GPIO pin 40
