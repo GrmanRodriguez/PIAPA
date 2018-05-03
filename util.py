@@ -150,6 +150,8 @@ class MovementManager():
         anglelist = [originalangle, finalangle, actualangle]
         while abs(anglelist[2] - anglelist[1]) > self.tolerance:
             toTurn = anglelist[1] - anglelist[2]
+            if abs(toTurn) > 180:
+                toTurn -= 360 * np.sign(toTurn)
             print('Now the Rover will turn {} - {} = {} deg'.format(anglelist[1], anglelist[2], toTurn))
             self.turn(toTurn)
             time.sleep(0.2)
