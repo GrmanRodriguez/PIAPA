@@ -55,15 +55,9 @@ class Rover(MovementManager, ArmManager):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         if ang < 0:
             ang = 360 + ang
-        # toTurn = ang - self.angle
-        # if abs(toTurn) == 270 or abs(toTurn) == 360 or abs(toTurn) == 315 or abs(toTurn) == 225:
-        #     toTurn = toTurn - 360 * np.sign(toTurn)
-        # if corrector is not None:
-        #     self.turn(toTurn + corrector)
-        # else:
-        #     self.turn(toTurn)
-        self.turnToAngle(ang)
-        self.angle = ang
+        if ang != self.angle:
+            self.turnToAngle(ang)
+            self.angle = ang
 
     def pick(self):
         self.no()
