@@ -162,7 +162,7 @@ class MovementManager():
         if abs(toTurn) > 180:
             toTurn -= 360 * np.sign(toTurn)
         print('You want to go to {}, from {}, so turn will be {}'.format(self.imuAngList[int(ang / 45)], self.imuangle, toTurn))
-        self.turnWithAngle(ang, toAng=1)
+        self.turnWithAngle(self.imuAngList[int(ang / 45)], toAng=1)
 
     # Function to stop all wheels
     def noMove(self):
