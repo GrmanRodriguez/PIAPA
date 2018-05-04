@@ -229,10 +229,10 @@ class ArmManager(serial.Serial):
     def __init__(self):
         serial.Serial.__init__(self, '/dev/serial0', 115200)
         self.neutralArmPosition = '#0 p800 s1050 #1 p2450 s300 #2 p3200 s300 #3 p0 '
-        self.stretchedArmPosition = '#0 p800 s1050 #1 p1450 s300 #2 p1800 s300 #3 p2250 s300 '
+        self.stretchedArmPosition = '#0 p800 s1050 #1 p1400 s300 #2 p1800 s300 #3 p2250 s300 '
         self.closedHand = '#4 p2400\r\n'
         self.openedHand = '#4 p900\r\n'
-        self.off = '#0 p0 #1 p0 #2 p0 #3 p0 #4 p0\r\n'
+        self.off = '#0 p0 #1 p0 #2 p0 #3 p0\r\n'
 
     def armOff(self):
         self.write(self.off)
