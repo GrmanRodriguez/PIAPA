@@ -32,7 +32,7 @@ class MovementManager():
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
     tolerance = 2.5  # The tolerance variable is used to define an acceptable range between the turning angle and the IMU measured angle
     t45 = 0.1
-    imuAngList = [44.6607, 92.60857, 143.20214, 182.61, 234.45, 298.9035, 343.45, 16.82]
+    imuAngList = [44.6607, 92.60857, 143.20214, 173.57, 234.45, 298.9035, 343.45, 18.86]
 
     def __init__(self):
         # Setup pins as outputs
@@ -229,7 +229,7 @@ class ArmManager(serial.Serial):
     def __init__(self):
         serial.Serial.__init__(self, '/dev/serial0', 115200)
         self.neutralArmPosition = '#0 p800 s1050 #1 p2450 s300 #2 p3200 s300 #3 p0 '
-        self.stretchedArmPosition = '#0 p800 s1050 #1 p1400 s300 #2 p1800 s300 #3 p2250 s300 '
+        self.stretchedArmPosition = '#0 p800 s1050 #1 p1250 s300 #2 p1800 s300 #3 p2250 s300 '
         self.closedHand = '#4 p2400\r\n'
         self.openedHand = '#4 p900\r\n'
         self.off = '#0 p0 #1 p0 #2 p0 #3 p0\r\n'
