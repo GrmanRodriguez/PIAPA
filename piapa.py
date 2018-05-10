@@ -211,6 +211,8 @@ class Rover(MovementManager, ArmManager):
             print('going to {}'.format(element))
             self.turnToPoint(element[0], element[1], corrector)
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
+            if self.angle in [0,90,180,270]:
+                distance += 0.15
             interval = distance/max([abs(element[0] - self.position[0]),abs(element[1]-self.position[1])])
             begin = time.time()
             beginterv = time.time()            
