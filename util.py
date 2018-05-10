@@ -32,7 +32,7 @@ class MovementManager():
     LEHC = 33  # The left HC-SR04 Echo is connected to GPIO pin 33
     tolerance = 2.5  # The tolerance variable is used to define an acceptable range between the turning angle and the IMU measured angle
     t45 = 0.1
-    imuAngList = [44.6607, 92.60857, 143.20214, 173.57, 234.45, 298.9035, 343.23, 14.59]
+    imuAngList = [39.36, 92.60857, 143.20214, 173.57, 234.45, 298.9035, 343.23, 14.59]
 
     def __init__(self):
         # Setup pins as outputs
