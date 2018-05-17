@@ -556,8 +556,9 @@ if __name__ == '__main__':
     r.angle = 225
     r.hasObject = True
     print('5 seconds for calibration, put Rover in position...')
-    time.sleep(5)
+    time.sleep(3)
     r.calibrateMag()
+    time.sleep(2)
     r.grip()
     m = Map()
     m.start = r.position
