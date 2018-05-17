@@ -551,12 +551,14 @@ def ctrlc():
 
 
 if __name__ == '__main__':
-    r = Rover()
-    r.position = [0,0]
-    r.angle = 270
+    r = Rover()    
+    r.position = [4,3]
+    r.angle = 225
+    r.hasObject = True
     print('5 seconds for calibration, put Rover in position...')
     time.sleep(5)
     r.calibrateMag()
+    r.grip()
     m = Map()
     m.start = r.position
     m.target = [6,6]
