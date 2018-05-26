@@ -1,7 +1,6 @@
 # PIAPA Robot
 # Grman Rodriguez, Edwin Acosta
 # Obstacle avoidance
-# Phase 2: OOP, Sensing and routing
 # --------------------------------------------------
 # Libraries
 import numpy as np  # numpy will handle arrays
@@ -9,14 +8,12 @@ import math  # math library for operations
 import RPi.GPIO as GPIO  # Raspberry GPIO pins
 import time  # time library for delays
 import MySQLdb  # library needed for communication with UI through MySQL database
-from smbus import SMBus
-import threading
-import atexit
-import serial
-from util import MovementManager, ArmManager
+import atexit # To handle GPIO cleanup and port closure when exiting the code
+import serial # To control different boards that handle actuators through serial commands
+from util import MovementManager, ArmManager # refer to util.py for these libraries
 # --------------------------------------------------
 # Classes
-# The Rover class will handle vehicle movement and create and update routes
+# The Rover class will handle higher level vehicle movement and sensor data acquisition
 
 
 class Rover(MovementManager, ArmManager):
@@ -38,11 +35,11 @@ class Rover(MovementManager, ArmManager):
         self.no()
         self.armOff()
 
-    # goToPoint will execute the necessary commands to go to the desired destination
+    # goToPoint will execute the necessary commands to go to a desired destination in the work area
     def goToPoint(self, y, x):
         if self.position != [y,x]:
             ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
-            if ang < 0:
+            if ang < 0: # We make sure to prevent negative angles
                 ang = 360 + ang
             if ang != self.angle:
                 self.turnToAngle(ang)
@@ -51,7 +48,9 @@ class Rover(MovementManager, ArmManager):
             self.forw(distance)  # Similarly, calculate the distance the vehicle should move and go forward
             self.position = [y, x]  # Finally, update the state of the vehicle
 
-    def turnToPoint(self, y, x, corrector=None):
+    # TurnToPoint offers the same functionality as goToPoint but without moving forward, just makes sure the robot is looking
+    # in the direction of the supplied point 
+    def turnToPoint(self, y, x):
         ang = math.atan2(-(y - self.position[0]), x - self.position[1]) * 180 / math.pi  # We find the orientation the vehicle should have to go to the desired point
         if ang < 0:
             ang = 360 + ang
@@ -59,6 +58,7 @@ class Rover(MovementManager, ArmManager):
             self.turnToAngle(ang)
             self.angle = ang
 
+    # The necessary commands to make the arm lean down, close the gripper, and go back up
     def pick(self):
         self.no()
         time.sleep(1)
@@ -72,6 +72,7 @@ class Rover(MovementManager, ArmManager):
         if not self.hasObject:
             self.hasObject = True
 
+    # The necessary commands to make the arm lean down, open the gripper, and go back up
     def place(self):
         self.nc()
         time.sleep(1)
@@ -85,6 +86,8 @@ class Rover(MovementManager, ArmManager):
         if self.hasObject:
             self.hasObject = False
 
+    # The IMU used for angle correction requires calibration, for which it must take samples in every direction. For this, we make
+    # the robot spin in its axis and let the IMU take the samples it needs
     def calibrateMag(self):
         self.imu.timeout = None
         self.imu.write('c')
@@ -97,6 +100,9 @@ class Rover(MovementManager, ArmManager):
         else:
             print('Something Happened')
 
+    # readAngle() measures the magnetic field in the perpendicular axes and takes the data to calculate the robot's orientation
+    # this works only if the robot is sufficiently far from any magnetic field inducing body such as magnets and coils
+    # returns an angle in degrees
     def readAngle(self):
         self.imu.timeout = 3
         self.imu.write('s')
@@ -107,6 +113,7 @@ class Rover(MovementManager, ArmManager):
         angle = eval(angle[:-1])
         return angle
 
+    # avgAngle() measures the robot's orientation using readAngle() 8 times and returns the average, to reduce sensor variation error
     def avgAngle(self):
         angles = []
         for x in range(8):
@@ -114,80 +121,33 @@ class Rover(MovementManager, ArmManager):
             angles.append(angle)
         return sum(angles)/len(angles)
 
+    # readSonic() takes a measurement from the HC-SR04 and returns it in meters
     def readSonic(self):
-        GPIO.output(self.FTHC, GPIO.HIGH)
+        GPIO.output(self.FTHC, GPIO.HIGH) # Set the trigger high to activate HC-SR04 sensor
         time.sleep(0.00001)
         GPIO.output(self.FTHC, GPIO.LOW)
+        # Calculate echo pulse width
         while True:
-            startTimeF = time.time()
+            startTime = time.time()
             if GPIO.input(self.FEHC)==GPIO.HIGH:
                 break
         while True:
-            endTimeF = time.time()
+            endTime = time.time()
             if GPIO.input(self.FEHC)==GPIO.LOW:
                 break
-        durationF=endTimeF-startTimeF
-        distanceF=(durationF*343.0)/2.0
+        duration=endTime-startTime
+        # Convert time into distance using the velocity of sound
+        distance=(duration*343.0)/2.0
+        return distance
         
-        # GPIO.output(self.RTHC, GPIO.HIGH)
-        # time.sleep(0.00001)
-        # GPIO.output(self.RTHC, GPIO.LOW)
-        # while True:
-        #     startTime = time.time()
-        #     if GPIO.input(self.REHC)==GPIO.HIGH:
-        #         break
-        # while True:
-        #     endTime = time.time()
-        #     if GPIO.input(self.REHC)==GPIO.LOW:
-        #         break
-        # durationR=endTime-startTime
-        # distanceR=(durationR*343.0)/2.0
-        
-        # GPIO.output(self.LTHC, GPIO.HIGH)
-        # time.sleep(0.00001)
-        # GPIO.output(self.LTHC, GPIO.LOW)
-        # while True:
-        #     startTimeL = time.time()
-        #     if GPIO.input(self.LEHC)==GPIO.HIGH:
-        #         break
-        # while True:
-        #     endTimeL = time.time()
-        #     if GPIO.input(self.LEHC)==GPIO.LOW:
-        #         break
-        # durationL=endTimeL-startTimeL
-        # distanceL=(durationL*343.0)/2.0
-        return distanceF
-        #return distanceL
-        #return distanceR
-        #print('Distancia Lateral Derecha: {}'.format(distanceR))
 
-    def createTasks(self, points):
-        def Reduce(points):
-            angle=math.atan2(points[1][0]-points[0][0],points[1][1]-points[0][1])
-            reducedpoints=[]
-            for x in range(len(points)-1):
-                newangle=math.atan2(points[x+1][0]-points[x][0],points[x+1][1]-points[x][1])
-                if newangle != angle:
-                    reducedpoints.append(points[x])
-                else:
-                    if x == len(points)-2:
-                        reducedpoints.append(points[x])
-            reducedpoints.append(points[len(points)-1])
-            return reducedpoints
-        if len(points) > 2:
-            reducedpoints = Reduce(points)
-        else:
-            reducedpoints = points
-        for element in reducedpoints[:-1]:
-            self.goToPoint(element[0], element[1])
-            m.sendData(type='pos_route', pos=r.position)
-        self.turnToPoint(points[-1][0], points[-1][1])
-        if self.hasObject:
-            self.place()
-        else:
-            self.pick()
-
-    def createTasksComplete(self, points, corrector = None):
+    # createTasksComplete(points) is the main program for Pick-N-Plce functionality. It takes a list of points and goes to each of them
+    # while sensing continuosly for obstacles and recursively re-planning when in presence of an obstacle. It also takes care
+    # of arm functionality.
+    # points should be a list of point duples or point lists with length 2, like so: [(1,1), (1,2)] or [[1,1], [1,2]]
+    def createTasksComplete(self, points):
+        # Reduce(points) removes makes sure consecutive points with the same orientation generate a continuous movement
+        # rather than a boxy, cell-by-cell movement by removing redundant points from the list, returns the shortened list
         def Reduce(points):
             angle=math.atan2(points[1][0]-points[0][0],points[1][1]-points[0][1])
             reducedpoints=[]
@@ -201,23 +161,34 @@ class Rover(MovementManager, ArmManager):
                 angle = newangle
             reducedpoints.append(points[len(points)-1])
             return reducedpoints
+        # Points are first reduced if necessary
         if len(points) > 2:
             reducedpoints = Reduce(points)
         else:
             reducedpoints = points
-        print(points)
-        print(reducedpoints)         
+        # Main      
         for element in reducedpoints[:-1]:
             print('going to {}'.format(element))
-            self.turnToPoint(element[0], element[1], corrector)
+            # Since we want to read the ultrasonic while the robot moves, we can't use Rover.forw(dist), we must use a makeshift
+            # method that frees up the Rover for sensor reading
+            # First we turn to the point we want to go
+            self.turnToPoint(element[0], element[1])
+            # Then calculate the distance to the next point
             distance = ((element[0] - self.position[0]) ** 2 + (element[1] - self.position[1]) ** 2) ** 0.5 * self.gridSize
+            # This correction was needed when moving diagonally
             if self.angle in [45,135,225,315]:
                 distance += 0.08
+            # We neeed to update the robot's position in real time in order to properly place obstacles when detected, for this
+            # we'll divide the distance in individual intervals that represent moving to each cell
             interval = distance/max([abs(element[0] - self.position[0]),abs(element[1]-self.position[1])])
+            # Keep track of the time
             begin = time.time()
             beginterv = time.time()            
             while ((time.time() - begin) < (distance * 1 / self.Straight)):
+                # Turn the wheels on
                 self.RL(1); self.FL(1); self.FR(1); self.RR(1)
+                # If the time interval has passed, the robot's position has changed by 1 cell in the direction
+                # of movement. The robot's state must be updated and a new time interval must be measured.
                 if ((time.time() - beginterv) > (interval * 1 / self.Straight)):
                     if element[0] > self.position[0]:
                         self.position = [self.position[0]+1, self.position[1]]
@@ -228,8 +199,11 @@ class Rover(MovementManager, ArmManager):
                     elif element[1] < self.position[1]:
                         self.position = [self.position[0], self.position[1]-1]
                     beginterv = time.time()
+                # Reading the HC-SR04 for obstacles
                 obstacle = self.readSonic()
+                # 0.35m was a distance calculated empirically to provide good results for obstacle detection
                 if obstacle < 0.35:
+                    # Find the direction of the obstacle (same as direction of movement)
                     y=0
                     x=0
                     if element[0] > self.position[0]:
@@ -240,21 +214,23 @@ class Rover(MovementManager, ArmManager):
                         x+=1   
                     elif element[1] < self.position[1]:
                         x-=1
-                    if [self.position[0]+y,self.position[1]+x] not in m.disabledNodes:
-                        self.noMove()
-                        obstacle = self.readSonic()
+                    if [self.position[0]+y,self.position[1]+x] not in m.disabledNodes: # If this is a new obstacle
+                        self.noMove() # Stop
+                        obstacle = self.readSonic() # Measure again to prevent ghost readings
                         if obstacle < 0.35:
                             print('Obstacle found')
-                            self.backw(0.03)
+                            self.backw(0.03) # Move backwards a little to correct drift
                             m.disableNode(self.position[0]+y,self.position[1]+x)   
-                            self.createTasksComplete(m.dijkstra(interim_pos=self.position))
-                            return
+                            self.createTasksComplete(m.dijkstra(interim_pos=self.position)) # Recursively re-plan
+                            return # If re-planning was done, there's no need to keep running the higher order method
+                # A pseudo-PWM was implemented to make the robot move slower in straight line
                 time.sleep(0.009)
                 self.noMove()
                 time.sleep(0.005)
             self.noMove()
             self.position = element
             m.sendData(type='pos_route', pos=self.position)
+        # Turn to the last point, because the target is there and we must not reach it, but rather get to it
         self.turnToPoint(points[-1][0], points[-1][1])
         if self.hasObject:
             self.place()
